@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Atlas</string>
+    <string name="addtracker">addTracker</string>
 </resources>
