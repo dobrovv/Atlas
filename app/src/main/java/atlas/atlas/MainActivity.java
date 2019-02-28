@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Atlas"+MainActivity.class.getSimpleName();
 
-    ListView trackerListMain;
+    RecyclerView trackerListMain;
+    TrackerListAdapter trackerListAdapter;
     Button startServiceButton;
     Button stopServiceButton;
     TextView mapTextView; // placeholder, use for debugging
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity {
 
             // add data to textview
             mapTextView.setText(info + '\n'+ mapTextView.getText());
+
+            // update the tracker list
+            trackerListAdapter.updateTracker(TrackerID);
         }
     }
     GPSReadingBroadcastReceiver gpsReadingBroadcastReceiver;
@@ -72,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
         startServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "Clicked");
                 Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
                 intent.setAction(ReceiverServiceMockup.ACTION_START_FOREGROUND_SERVICE);
                 startService(intent);
@@ -86,6 +91,22 @@ public class MainActivity extends AppCompatActivity {
                 startService(intent);
             }
         });
+
+        // display the trackers list
+        trackerListMain.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        trackerListMain.setLayoutManager(layoutManager);
+
+        trackerListAdapter = new TrackerListAdapter(this);
+        trackerListMain.setAdapter(trackerListAdapter);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // update the tracker list if the Activity gained focus back without calling the onCreate()
+        trackerListAdapter.updateTrackerList();
     }
 
     @Override
@@ -98,10 +119,11 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id=item.getItemId();
 
-
         // in case we added more to toolbar
         if(id==R.id.addTracker){
-            startActivity(new Intent(this, trackerActivity.class));
+            //startActivity(new Intent(this, trackerActivity.class));
+            AddTrackerDialog dialog = new AddTrackerDialog();
+            dialog.show(getSupportFragmentManager(), "Add new Tracker");
         }
 
         // more if statements can enter here to intent to activities
