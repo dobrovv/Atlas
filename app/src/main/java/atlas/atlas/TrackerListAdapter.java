@@ -2,6 +2,7 @@ package atlas.atlas;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,14 +27,17 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
     Context context;
     ArrayList<Tracker> adapterTrackerList;
     ArrayList<GPSReading> adapterGpsReadings; // stores a GPSReading for each adapter in adapterTrackerList, must have same size
+    Location latestAndroidLocation; // may be null
 
     public class TrackerViewHolder extends RecyclerView.ViewHolder {
         protected TextView trackerIDTextView;
         protected TextView trackerNameTextView;
         protected TextView timestampTextView;
+        protected TextView trackerDistanceTextView;
         protected ImageView trackerImageView;
         protected Button    trackerEditButton;
         protected Button    trackerDeleteButton;
+
 
         public TrackerViewHolder(View itemView) {
             super(itemView);
@@ -41,6 +46,8 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
             trackerImageView = (ImageView) itemView.findViewById(R.id.trackerImageView);
             // from GPSReadings
             timestampTextView = (TextView) itemView.findViewById(R.id.timestampTextView);
+            // from AndroidLocationService
+            trackerDistanceTextView = (TextView) itemView.findViewById(R.id.trackerDistanceTextView);
             //buttons
             trackerEditButton = (Button) itemView.findViewById(R.id.trackerEditButton);
             trackerDeleteButton = (Button) itemView.findViewById(R.id.trackerDeleteButton);
@@ -51,6 +58,8 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
 
         this.context = context;
         getDataFromDB();
+
+        latestAndroidLocation = AndroidLocationService.getLastKnownLocation(context);
     }
 
     private void getDataFromDB() {
@@ -83,6 +92,7 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
     }
 
     public void updateTracker(String TrackerID) {
+        latestAndroidLocation = AndroidLocationService.getLastKnownLocation(context);
         int pos = getTrackerPosByID(TrackerID);
         if (pos >= 0) {
             DatabaseHelper dbh = new DatabaseHelper(context);
@@ -92,12 +102,15 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         } else {
             Log.d(TAG, String.format("Updating TrackerID=\"%s\", but it's not in the trackerList", TrackerID));
         }
+
     }
 
     // update all trackers
     public void updateTrackerList() {
+        latestAndroidLocation = AndroidLocationService.getLastKnownLocation(context);
         getDataFromDB();
         notifyDataSetChanged();
+
     }
 
     @Override
@@ -109,7 +122,7 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
 
 
     @Override
-    public void onBindViewHolder(final TrackerViewHolder itemViewHolder, int i) {
+    public void onBindViewHolder(final TrackerViewHolder itemViewHolder, final int i) {
         Tracker tracker = adapterTrackerList.get(i);
         if (tracker != null) {
             itemViewHolder.trackerIDTextView.setText("ID:"+ tracker.TrackerID);
@@ -128,6 +141,13 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
             itemViewHolder.timestampTextView.setText("Timestamp: "+ gpsReading.androidTimestamp/1000 );
         } else {
             itemViewHolder.timestampTextView.setText("Not seen yet");
+        }
+        if(latestAndroidLocation != null && gpsReading != null) {
+            float[] distance = new float[1];
+            Location.distanceBetween(latestAndroidLocation.getLatitude(), latestAndroidLocation.getLongitude(), gpsReading.Latitude, gpsReading.Longitude, distance);
+            itemViewHolder.trackerDistanceTextView.setText(String.format("Distance: %.1f meters", distance[0]));
+        } else {
+            itemViewHolder.trackerDistanceTextView.setText("Distance: Not in range");
         }
 
         // Edit button onClick listener
@@ -161,6 +181,27 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                 DatabaseHelper dbh = new DatabaseHelper(context);
                 dbh.deleteTracker(t.TrackerID);
                 updateTrackerList();
+            }
+        });
+
+        itemViewHolder.trackerImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(), i + " position", Toast.LENGTH_SHORT).show();
+                // go to Map activity
+                try {
+                    GPSReading gpsReading = adapterGpsReadings.get(i);
+                    Intent intent = new Intent(context, MapActivity.class);
+                    intent.putExtra("TrackerID", gpsReading.TrackerID);
+                    intent.putExtra("Latitude", gpsReading.Latitude);
+                    intent.putExtra("Longitude", gpsReading.Longitude);
+                    intent.putExtra("AndroidLatitude", latestAndroidLocation.getLatitude());
+                    intent.putExtra("AndroidLongitude", latestAndroidLocation.getLongitude());
+                    context.startActivity(intent);
+
+                } catch (Exception ex) {
+                    Log.d(TAG, "Can't start map activity: Exception " + ex.getMessage() );
+                }
             }
         });
 
