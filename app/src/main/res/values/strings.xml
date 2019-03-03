@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Atlas</string>
     <string name="addtracker">addTracker</string>
+    <string name="title_activity_map">Map Activity</string>
 </resources>

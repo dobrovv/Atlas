@@ -190,17 +190,20 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                 Toast.makeText(v.getContext(), i + " position", Toast.LENGTH_SHORT).show();
                 // go to Map activity
                 try {
-                    GPSReading gpsReading = adapterGpsReadings.get(i);
-                    Intent intent = new Intent(context, MapActivity.class);
-                    intent.putExtra("TrackerID", gpsReading.TrackerID);
-                    intent.putExtra("Latitude", gpsReading.Latitude);
-                    intent.putExtra("Longitude", gpsReading.Longitude);
-                    intent.putExtra("AndroidLatitude", latestAndroidLocation.getLatitude());
-                    intent.putExtra("AndroidLongitude", latestAndroidLocation.getLongitude());
-                    context.startActivity(intent);
-
+                    GPSReading gpsReading = adapterGpsReadings.get(i); // can be null if there are no gps readings for the current Tracker
+                    if (gpsReading == null) {
+                        Toast.makeText(context, "Tracker doesn't have location available", Toast.LENGTH_LONG).show();
+                    } else {
+                        Intent intent = new Intent(context, MapActivity.class);
+                        intent.putExtra("TrackerID", gpsReading.TrackerID);
+                        intent.putExtra("Latitude", gpsReading.Latitude);
+                        intent.putExtra("Longitude", gpsReading.Longitude);
+                        intent.putExtra("AndroidLatitude", latestAndroidLocation.getLatitude());
+                        intent.putExtra("AndroidLongitude", latestAndroidLocation.getLongitude());
+                        context.startActivity(intent);
+                    }
                 } catch (Exception ex) {
-                    Log.d(TAG, "Can't start map activity: Exception " + ex.getMessage() );
+                    Log.e(TAG, "Can't start map activity: Exception " + ex.getMessage() );
                 }
             }
         });
