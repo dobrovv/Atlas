@@ -1,9 +1,15 @@
 package atlas.atlas;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,11 +28,36 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "Atlas"+MainActivity.class.getSimpleName();
 
+    // android location permissions
+    private static final String[] LOCATION_PERMS={
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+    };
+    // for permission requests
+    private static final int INITIAL_REQUEST=1010;
+    private static final int LOCATION_REQUEST=INITIAL_REQUEST+1;
+
+    //helper to access GPS permission
+    private boolean hasPermission(String perm) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            return true;
+        } else {
+            return (PackageManager.PERMISSION_GRANTED == checkSelfPermission(perm));
+        }
+    }
+
+    //helper to access GPS permission
+    private boolean canAccessLocation() {
+        return(hasPermission(Manifest.permission.ACCESS_FINE_LOCATION));
+    }
+
+
     RecyclerView trackerListMain;
     TrackerListAdapter trackerListAdapter;
     Button startServiceButton;
     Button stopServiceButton;
     TextView mapTextView; // placeholder, use for debugging
+    Location androidLatestLocation; // stores the latest known androids location (may be null)
 
     /**
      *  Broadcast Receiver for the GPSReading updates that are sent from ReceiverServiceMockup
@@ -56,7 +87,38 @@ public class MainActivity extends AppCompatActivity {
             trackerListAdapter.updateTracker(TrackerID);
         }
     }
+    /**
+     *  Broadcast Receiver for androids gps location and changes in gps status
+     *  the NEW_ANDROIDLOCATION broadcast contains latitude and longitude, and Provider(gps/network)
+     *  the LOCATIONPROVIDER_ENABLED_CHANGE broardcast notifies when gps and network location updates become enabled/disabled
+     * */
+    class AndroidLocationBroadcastsReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            if(intent == null)  return;
+            String action = intent.getAction();
+
+            // get new android location
+            if (action.equals(AndroidLocationService.BROADCAST_ACTION_NEW_ANDROIDLOCATION)) {
+                // get the location data, (it's also present in broadcast's intent)
+                androidLatestLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
+                if (androidLatestLocation != null)
+                    mapTextView.setText( "Android location "+androidLatestLocation.getProvider() +" "+ androidLatestLocation.getLatitude() + " "+ androidLatestLocation.getLongitude() +"\n"+ mapTextView.getText());
+
+                // get wheter gps/network location updates are disabled/enabled
+            } else if (action.equals(AndroidLocationService.BROADCAST_ACTION_LOCATIONPROVIDER_ENABLED_CHANGE)) {
+                String Provider = intent.getStringExtra("Provider");
+                boolean Enabled = intent.getBooleanExtra("Enabled", false);
+                mapTextView.setText( "Enabled "+ Provider + " "+ Enabled +"\n"+ mapTextView.getText());
+            }
+        }
+    }
+
+
     GPSReadingBroadcastReceiver gpsReadingBroadcastReceiver;
+    AndroidLocationBroadcastsReceiver androidLocationBroadcastsReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +136,13 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction(ReceiverServiceMockup.BROADCAST_ACTION_NEW_GPSREADING);
         registerReceiver(gpsReadingBroadcastReceiver, intentFilter);
 
+        // Register the broadcast receiver for android location broadcasts
+        androidLocationBroadcastsReceiver = new AndroidLocationBroadcastsReceiver();
+        IntentFilter intentFilter2 = new IntentFilter();
+        intentFilter2.addAction(AndroidLocationService.BROADCAST_ACTION_NEW_ANDROIDLOCATION);
+        intentFilter2.addAction(AndroidLocationService.BROADCAST_ACTION_LOCATIONPROVIDER_ENABLED_CHANGE);
+        registerReceiver(androidLocationBroadcastsReceiver, intentFilter2);
+
         // Set on click listeners for buttons
         startServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -81,13 +150,29 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
                 intent.setAction(ReceiverServiceMockup.ACTION_START_FOREGROUND_SERVICE);
                 startService(intent);
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !canAccessLocation()) {
+                    requestPermissions( LOCATION_PERMS, LOCATION_REQUEST);
+                } else {
+                    intent = new Intent(MainActivity.this, AndroidLocationService.class);
+                    intent.setAction(AndroidLocationService.ACTION_START_SERVICE);
+                    startService(intent);
+                }
+
             }
         });
+
         stopServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //stop the receiver mockup
                 Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
                 intent.setAction(ReceiverServiceMockup.ACTION_STOP_FOREGROUND_SERVICE);
+                startService(intent);
+
+                //stop the android location service
+                intent = new Intent(MainActivity.this, AndroidLocationService.class);
+                intent.setAction(AndroidLocationService.ACTION_STOP_SERVICE);
                 startService(intent);
             }
         });
@@ -138,5 +223,27 @@ public class MainActivity extends AppCompatActivity {
         if (gpsReadingBroadcastReceiver != null) {
             unregisterReceiver(gpsReadingBroadcastReceiver);
         }
+        if (androidLocationBroadcastsReceiver != null) {
+            unregisterReceiver(androidLocationBroadcastsReceiver);
+        }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        switch(requestCode) {
+            case LOCATION_REQUEST:
+                if (canAccessLocation()) {
+                    Intent intent = new Intent(MainActivity.this, AndroidLocationService.class);
+                    intent.setAction(AndroidLocationService.ACTION_START_SERVICE);
+                    startService(intent);
+                }
+                else {
+                   mapTextView.setText("Can't get GPS permission\n"+ mapTextView.getText());
+                }
+                break;
+        }
+    }
+
+
 }

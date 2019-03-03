@@ -16,7 +16,7 @@
         android:layout_marginTop="70dp"
         android:layout_toEndOf="@+id/trackerImageView"
         android:layout_toRightOf="@+id/trackerImageView"
-        android:text="Timestamp here"
+        android:text="TrackerID here"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <ImageView
@@ -48,6 +48,19 @@
         android:layout_toEndOf="@+id/trackerImageView"
         android:layout_toRightOf="@+id/trackerImageView"
         android:text="Timestamp here"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/trackerDistanceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/trackerNameTextView"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="21dp"
+        android:layout_toEndOf="@+id/trackerImageView"
+        android:layout_toRightOf="@+id/trackerImageView"
+        android:text="Distance here"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <Button

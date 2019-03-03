@@ -4,6 +4,7 @@ import android.app.Service;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -18,7 +19,7 @@ import java.util.Random;
  * The Intent of the broadcast contains the TrackerID, GPSReadingID and the coordinates
  * */
 public class ReceiverServiceMockup extends Service {
-    private static final String TAG = "Atlas"+ReceiverServiceMockup.class.getSimpleName();
+    private static final String TAG = "Atla"+ReceiverServiceMockup.class.getSimpleName();
 
     public static final int ONGOING_NOTIFICATION_ID = 1; // id of the displayed notification
 
@@ -31,8 +32,8 @@ public class ReceiverServiceMockup extends Service {
 
     // Test data to generate new GPSReadings, arrays must have equal size
     private static String[] TestTrackerIDs = {"00001", "00002", "00003", "00004", "00005"};
-    private static double[] TrackersLatitude = {50.,50.0,50.0,50.0,50.0,50.0};
-    private static double[] TrackersLongitude = {50.0,50.0,50.0,50.0,50.0,50.0};
+    private static double[] TrackersLatitude = {1e-4,1e-4,-1e-4,-1e-4,-1e-4};
+    private static double[] TrackersLongitude = {-1e-4,1e-4,-1e-4,1e-4,1e-4};
     private static double[] TrackersSpeed = {1e-6,1e-6,1e-6,1e-6,1e-6,1e-6};
 
 
@@ -65,6 +66,12 @@ public class ReceiverServiceMockup extends Service {
             String TrackerID = TestTrackerIDs[id];
             Double Latitude = TrackersLatitude[id] += TrackersSpeed[id]*Math.sin(angle);
             Double Longitude = TrackersLongitude[id] += TrackersSpeed[id]*Math.cos(angle);
+
+            Location latestAndroidLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
+            if (latestAndroidLocation != null) {
+                Latitude += latestAndroidLocation.getLatitude();
+                Longitude += latestAndroidLocation.getLongitude();
+            }
 
             GPSReading newGpsReading = new GPSReading(0L, TrackerID, currentTimeMillis(), Latitude, Longitude, TrackersSpeed[id], 0, 0);
 
