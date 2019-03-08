@@ -131,7 +131,12 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
             } else {
                 itemViewHolder.trackerNameTextView.setText(tracker.TrackerName);
             }
-            itemViewHolder.trackerImageView.setImageResource(R.drawable.ic_launcher_foreground);
+            if(tracker.TrackerIcon == null || tracker.TrackerIcon.isEmpty()) {
+                itemViewHolder.trackerImageView.setImageResource(R.drawable.ic_launcher_foreground);
+            } else {
+                int resID = context.getResources().getIdentifier(tracker.TrackerIcon, "mipmap", context.getPackageName());
+                itemViewHolder.trackerImageView.setImageResource(resID);
+            }
         } else {
             Log.d(TAG, "Tracker is null"); //shouldn't happen
         }
