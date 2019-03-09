@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -13,7 +14,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -26,6 +30,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     Double Longitude;
     Double AndroidLatitude;
     Double AndroidLongitude;
+
+    Marker androidMarker;
+
+    Marker trackerMarker;
+    Circle allowedDistanceCircle;
 
 
     GPSReadingBroadcastReceiver gpsReadingBroadcastReceiver;
@@ -58,6 +67,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         registerReceiver(androidLocationBroadcastsReceiver, intentFilter2);
 
 
+
+
         //get parameters from the intent (sent in TrackerListAdapter)
         Intent intent = getIntent();
         if (intent != null) {
@@ -87,9 +98,19 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         // Add a marker in Sydney and move the camera
         LatLng androidLoc = new LatLng(AndroidLatitude, AndroidLongitude);
         LatLng trackerLoc = new LatLng(Latitude, Longitude);
-        mMap.addMarker(new MarkerOptions().position(androidLoc).title("Android"));
-        mMap.addMarker(new MarkerOptions().position(trackerLoc).title("TrackerID"+TrackerID));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(trackerLoc));
+        androidMarker = mMap.addMarker(new MarkerOptions().position(androidLoc).title("Android"));
+        trackerMarker = mMap.addMarker(new MarkerOptions().position(trackerLoc).title("TrackerID"+TrackerID));
+
+        DatabaseHelper dbh = new DatabaseHelper(this);
+        Tracker tracker = dbh.getTrackerByID(TrackerID);
+        
+
+        allowedDistanceCircle = mMap.addCircle(new CircleOptions()
+                .center(androidLoc)
+                .radius(tracker.AllowedDistance)
+                .strokeColor(Color.RED)
+                .fillColor(Color.argb(50, 100, 255, 255)));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(trackerLoc, 15));
     }
 
     /**
@@ -107,10 +128,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             String updatedTrackerID = intent.getStringExtra("TrackerID");
 
             // check if the updated tracker is the tracker that the map displays
-            if (updatedTrackerID==TrackerID) {
+            if (updatedTrackerID.equals(TrackerID)) {
                 Long GPSReadingID = intent.getLongExtra("GPSReadingID", 0);
                 Double Latitude = intent.getDoubleExtra("Latitude", 0.0);
                 Double Longitude = intent.getDoubleExtra("Longitude", 0.0);
+                if (trackerMarker != null)
+                    trackerMarker.setPosition(new LatLng(Latitude, Longitude));
 
                 // or retrieve the data again from the db
                 DatabaseHelper dbh = new DatabaseHelper(getApplicationContext());
@@ -134,7 +157,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             // get new android location
             if (action.equals(AndroidLocationService.BROADCAST_ACTION_NEW_ANDROIDLOCATION)) {
                 // get the latest location data, (it's also present in broadcast's intent)
-                // Location androidLatestLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
+                Location androidLatestLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
+                if(androidMarker != null)
+                    androidMarker.setPosition(new LatLng(androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude()));
 
             // get wheter gps/network location updates are disabled/enabled
             } else if (action.equals(AndroidLocationService.BROADCAST_ACTION_LOCATIONPROVIDER_ENABLED_CHANGE)) {
