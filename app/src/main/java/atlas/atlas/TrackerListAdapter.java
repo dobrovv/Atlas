@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import static java.lang.System.currentTimeMillis;
+
 // Recycleview How-to:
 //  https://www.intertech.com/Blog/android-v5-lollipop-recyclerview-tutorial/
 //  https://developer.android.com/guide/topics/ui/layout/recyclerview
@@ -102,7 +104,19 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         } else {
             Log.d(TAG, String.format("Updating TrackerID=\"%s\", but it's not in the trackerList", TrackerID));
         }
+    }
 
+    public void deleteTracker(String TrackerID) {
+        int pos = getTrackerPosByID(TrackerID);
+        try {
+            DatabaseHelper dbh = new DatabaseHelper(context);
+            dbh.deleteTracker(TrackerID);
+            adapterTrackerList.remove(pos);
+            adapterGpsReadings.remove(pos);
+            notifyItemRemoved(pos);
+        } catch (Exception ex) {
+            Log.e(TAG, "deleteTracker(): Exception " + ex.getMessage() );
+        }
     }
 
     // update all trackers
@@ -110,8 +124,16 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         latestAndroidLocation = AndroidLocationService.getLastKnownLocation(context);
         getDataFromDB();
         notifyDataSetChanged();
-
     }
+
+    // update the tracker list items without fetching the data from db
+    // used by the trackerListTimer and to update androids location
+    // TODO: (visible bugs) this causes the running animations to stop
+    public void updateTrackerListViews() {
+        latestAndroidLocation = AndroidLocationService.getLastKnownLocation(context);
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public TrackerViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -123,52 +145,66 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
 
     @Override
     public void onBindViewHolder(final TrackerViewHolder itemViewHolder, final int i) {
-        Tracker tracker = adapterTrackerList.get(i);
-        if (tracker != null) {
+        try {
+            Tracker tracker = adapterTrackerList.get(i);
+            GPSReading gpsReading = adapterGpsReadings.get(i);
+
+            // set tracker id
             itemViewHolder.trackerIDTextView.setText("ID:"+ tracker.TrackerID);
+
+            // set tracker name
             if(tracker.TrackerName==null || tracker.TrackerName.isEmpty()) {
                 itemViewHolder.trackerNameTextView.setText("Unnamed tracker");
             } else {
                 itemViewHolder.trackerNameTextView.setText(tracker.TrackerName);
             }
+
+            // set tracker icon
             if(tracker.TrackerIcon == null || tracker.TrackerIcon.isEmpty()) {
                 itemViewHolder.trackerImageView.setImageResource(R.drawable.ic_launcher_foreground);
             } else {
                 int resID = context.getResources().getIdentifier(tracker.TrackerIcon, "mipmap", context.getPackageName());
                 itemViewHolder.trackerImageView.setImageResource(resID);
             }
-        } else {
-            Log.d(TAG, "Tracker is null"); //shouldn't happen
-        }
 
-        GPSReading gpsReading = adapterGpsReadings.get(i);
-        if (gpsReading != null) { // gpsReading may be null
-            itemViewHolder.timestampTextView.setText("Timestamp: "+ gpsReading.androidTimestamp/1000 );
-        } else {
-            itemViewHolder.timestampTextView.setText("Not seen yet");
-        }
-        if(latestAndroidLocation != null && gpsReading != null) {
-            float[] distance = new float[1];
-            Location.distanceBetween(latestAndroidLocation.getLatitude(), latestAndroidLocation.getLongitude(), gpsReading.Latitude, gpsReading.Longitude, distance);
-            itemViewHolder.trackerDistanceTextView.setText(String.format("Distance: %.1f meters", distance[0]));
-        } else {
-            itemViewHolder.trackerDistanceTextView.setText("Distance: Not in range");
+            // set timestamp // gpsReading may be null
+            if (gpsReading != null) {
+                long lastSeenMs = (currentTimeMillis() - gpsReading.androidTimestamp);
+                if (lastSeenMs < 3000) {
+                    itemViewHolder.timestampTextView.setText("Last seen: Just now");
+                } else {
+                    itemViewHolder.timestampTextView.setText("Last seen: " + lastSeenMs/1000 + " seconds ago");
+                }
+            } else {
+                itemViewHolder.timestampTextView.setText("Not seen yet");
+            }
+
+            // set distance
+            if(latestAndroidLocation != null && gpsReading != null) {
+                float[] distance = new float[1];
+                Location.distanceBetween(latestAndroidLocation.getLatitude(), latestAndroidLocation.getLongitude(), gpsReading.Latitude, gpsReading.Longitude, distance);
+                itemViewHolder.trackerDistanceTextView.setText(String.format("Distance: %.1f meters", distance[0]));
+            } else {
+                itemViewHolder.trackerDistanceTextView.setText("Distance: Not in range");
+            }
+
+        } catch (Exception ex) {
+            Log.e(TAG, "onBindViewHolder() : Exception " + ex.getMessage() );
         }
 
         // Edit button onClick listener
         itemViewHolder.trackerEditButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //TODO: (bugy!?) the adapter position may not match the viewholder during layout updates
-                int pos = itemViewHolder.getAdapterPosition();
-                if (pos==RecyclerView.NO_POSITION || pos >= getItemCount()) //check the position
-                    return;
-
-                // go to the trackerActivity
-                Tracker t = adapterTrackerList.get(pos);
-                Intent intent = new Intent(context, trackerActivity.class);
-                intent.putExtra("TrackerID", t.TrackerID); // add TrackerID to the intent send to the trackerActivity
-                context.startActivity(intent);
+                try {
+                    // go to the trackerActivity
+                    Tracker t = adapterTrackerList.get(i);
+                    Intent intent = new Intent(context, trackerActivity.class);
+                    intent.putExtra("TrackerID", t.TrackerID); // add TrackerID to the intent send to the trackerActivity
+                    context.startActivity(intent);
+                } catch (Exception ex) {
+                    Log.e(TAG, "Edit Button: Exception " + ex.getMessage() );
+                }
             }
         });
 
@@ -176,29 +212,25 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         itemViewHolder.trackerDeleteButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //TODO: (bugy!?) the adapter position may not match the viewholder during layout updates
-                int pos = itemViewHolder.getAdapterPosition();
-                if (pos==RecyclerView.NO_POSITION || pos >= getItemCount()) //check the position
-                    return;
-
-                //delete the tracker
-                Tracker t = adapterTrackerList.get(pos);
-                DatabaseHelper dbh = new DatabaseHelper(context);
-                dbh.deleteTracker(t.TrackerID);
-                updateTrackerList();
+                try {
+                    //delete the tracker
+                    Tracker t = adapterTrackerList.get(i);
+                    deleteTracker(t.TrackerID);
+                } catch (Exception ex) {
+                    Log.e(TAG, "Delete Button: Exception " + ex.getMessage() );
+                }
             }
         });
 
         itemViewHolder.trackerImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(), i + " position", Toast.LENGTH_SHORT).show();
-                // go to Map activity
                 try {
                     GPSReading gpsReading = adapterGpsReadings.get(i); // can be null if there are no gps readings for the current Tracker
                     if (gpsReading == null) {
                         Toast.makeText(context, "Tracker doesn't have location available", Toast.LENGTH_LONG).show();
                     } else {
+                        // go to Map activity
                         Intent intent = new Intent(context, MapActivity.class);
                         intent.putExtra("TrackerID", gpsReading.TrackerID);
                         intent.putExtra("Latitude", gpsReading.Latitude);
