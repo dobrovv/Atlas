@@ -8,10 +8,10 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,12 +19,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 
 //comment 12
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "Atlas"+MainActivity.class.getSimpleName();
 
@@ -51,12 +62,17 @@ public class MainActivity extends AppCompatActivity {
         return(hasPermission(Manifest.permission.ACCESS_FINE_LOCATION));
     }
 
-
+    // trackerList
     RecyclerView trackerListMain;
     TrackerListAdapter trackerListAdapter;
-    Button startServiceButton;
-    Button stopServiceButton;
+    Handler trackerListTimer; // handler for the timer to update the tracker list each second
+
+    // map
     TextView mapTextView; // placeholder, use for debugging
+    View miniMapView;
+    GoogleMap miniMap;
+    LinearLayout miniMapLayout;
+
     Location androidLatestLocation; // stores the latest known androids location (may be null)
 
     /**
@@ -78,10 +94,10 @@ public class MainActivity extends AppCompatActivity {
             //retrieving the data again from the db to test the db
             DatabaseHelper dbh = new DatabaseHelper(getApplicationContext());
             GPSReading gpsReading = dbh.getLatestGPSReading(TrackerID);
-            String info = String.format("TrackerID=\"%s\"(Lat= %3.6f Lng= %3.6f)", gpsReading.TrackerID, gpsReading.Latitude, gpsReading.Longitude);
+            String info = String.format("\tTrackerID=\"%s\" (%3.6f, %3.6f)", gpsReading.TrackerID, gpsReading.Latitude, gpsReading.Longitude);
 
             // add data to textview
-            mapTextView.setText(info + '\n'+ mapTextView.getText());
+            mapTextView.setText("NEW_GPSREADING Broadcast:" +'\n'+ info + '\n'+ mapTextView.getText());
 
             // update the tracker list
             trackerListAdapter.updateTracker(TrackerID);
@@ -104,14 +120,17 @@ public class MainActivity extends AppCompatActivity {
             if (action.equals(AndroidLocationService.BROADCAST_ACTION_NEW_ANDROIDLOCATION)) {
                 // get the location data, (it's also present in broadcast's intent)
                 androidLatestLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
-                if (androidLatestLocation != null)
-                    mapTextView.setText( "Android location "+androidLatestLocation.getProvider() +" "+ androidLatestLocation.getLatitude() + " "+ androidLatestLocation.getLongitude() +"\n"+ mapTextView.getText());
+                if (androidLatestLocation != null) {
+                    String info = String.format("NEW_ANDROIDLOCATION Broadcast:" +'\n' + "\tAndroid(provider=%s) (%3.6f, %3.6f)", androidLatestLocation.getProvider(), androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude());
+                    mapTextView.setText(info + "\n" + mapTextView.getText());
+                }
+                trackerListAdapter.updateTrackerListViews(); // update tracker items with new android location (for distance calculation)
 
                 // get wheter gps/network location updates are disabled/enabled
             } else if (action.equals(AndroidLocationService.BROADCAST_ACTION_LOCATIONPROVIDER_ENABLED_CHANGE)) {
                 String Provider = intent.getStringExtra("Provider");
                 boolean Enabled = intent.getBooleanExtra("Enabled", false);
-                mapTextView.setText( "Enabled "+ Provider + " "+ Enabled +"\n"+ mapTextView.getText());
+                mapTextView.setText( "LOCATIONPROVIDER_ENABLED_CHANGE Broadcast:" +'\n'+ "\tCoordinates from provider \""+ Provider + "\" are " + (Enabled?"ENABLED":"DISABLED") +"\n"+ mapTextView.getText());
             }
         }
     }
@@ -126,9 +145,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         trackerListMain = findViewById(R.id.trackerListMain);
-        startServiceButton = findViewById(R.id.startServiceButton);
-        stopServiceButton = findViewById(R.id.stopServiceButton);
+        //startServiceButton = findViewById(R.id.startServiceButton);
+        //stopServiceButton = findViewById(R.id.stopServiceButton);
+
+        // add minimap layout
         mapTextView = findViewById(R.id.mapTextView);
+        miniMapView = findViewById(R.id.miniMapView);
+        miniMapLayout = findViewById(R.id.miniMapLayout);
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.miniMapView);
+        try {
+            mapFragment.getMapAsync(this);
+        } catch (Exception ex) {
+            Log.e(TAG, "Can't start the google map");
+        }
 
         // Register the broadcast receiver for GPSReading broadcasts
         gpsReadingBroadcastReceiver = new GPSReadingBroadcastReceiver();
@@ -144,47 +174,41 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(androidLocationBroadcastsReceiver, intentFilter2);
 
         // Set on click listeners for buttons
-        startServiceButton.setOnClickListener(new View.OnClickListener() {
+        /*startServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
-                intent.setAction(ReceiverServiceMockup.ACTION_START_FOREGROUND_SERVICE);
-                startService(intent);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !canAccessLocation()) {
-                    requestPermissions( LOCATION_PERMS, LOCATION_REQUEST);
-                } else {
-                    intent = new Intent(MainActivity.this, AndroidLocationService.class);
-                    intent.setAction(AndroidLocationService.ACTION_START_SERVICE);
-                    startService(intent);
-                }
-
+                startBackgroundServices();
             }
         });
 
         stopServiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //stop the receiver mockup
-                Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
-                intent.setAction(ReceiverServiceMockup.ACTION_STOP_FOREGROUND_SERVICE);
-                startService(intent);
-
-                //stop the android location service
-                intent = new Intent(MainActivity.this, AndroidLocationService.class);
-                intent.setAction(AndroidLocationService.ACTION_STOP_SERVICE);
-                startService(intent);
+                stopBackgroundServices();
             }
-        });
+        });*/
 
         // display the trackers list
         trackerListMain.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         trackerListMain.setLayoutManager(layoutManager);
+        //add dividers between tracker items https://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview
+        trackerListMain.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         trackerListAdapter = new TrackerListAdapter(this);
         trackerListMain.setAdapter(trackerListAdapter);
+
+        // timer to update the tracker list periodically (for the "last seen" time)
+        trackerListTimer = new Handler();
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                trackerListAdapter.updateTrackerListViews(); // update the last seen time
+                trackerListTimer.postDelayed(this, 5300);
+            }
+        };
+        trackerListTimer.postDelayed(runnable, 5300);
     }
 
     @Override
@@ -200,6 +224,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    boolean mBackgroundServicesStarted = false; // store whether the background services were started or not
+    //boolean mShowMiniMap = true; // store whether the minimap is displayed or not
+    int mShowMiniMap = 0; // (0 - show) (1-show debug) (2-hide)
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id=item.getItemId();
@@ -209,6 +237,29 @@ public class MainActivity extends AppCompatActivity {
             //startActivity(new Intent(this, trackerActivity.class));
             AddTrackerDialog dialog = new AddTrackerDialog();
             dialog.show(getSupportFragmentManager(), "Add new Tracker");
+
+        } else if(id==R.id.startServicesAction) {
+            // start or stop services on button click
+            if ( mBackgroundServicesStarted == false) {
+                startBackgroundServices();
+            } else {
+                stopBackgroundServices();
+            }
+            mBackgroundServicesStarted = !mBackgroundServicesStarted;
+        } else if (id==R.id.showMiniMapAction) {
+            mShowMiniMap = (mShowMiniMap+1)%3;
+            if (mShowMiniMap == 0) {
+                miniMapView.setVisibility(View.VISIBLE);
+                mapTextView.setVisibility(View.GONE);
+                miniMapLayout.setVisibility(View.VISIBLE);
+            }  else if (mShowMiniMap == 1) {
+                miniMapView.setVisibility(View.GONE);
+                mapTextView.setVisibility(View.VISIBLE);
+                miniMapLayout.setVisibility(View.VISIBLE);
+            } else if (mShowMiniMap == 2) {
+                miniMapLayout.setVisibility(View.GONE);
+            }
+
         }
 
         // more if statements can enter here to intent to activities
@@ -228,6 +279,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void startBackgroundServices() {
+        Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
+        intent.setAction(ReceiverServiceMockup.ACTION_START_FOREGROUND_SERVICE);
+        startService(intent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !canAccessLocation()) {
+            requestPermissions( LOCATION_PERMS, LOCATION_REQUEST);
+        } else {
+            intent = new Intent(MainActivity.this, AndroidLocationService.class);
+            intent.setAction(AndroidLocationService.ACTION_START_SERVICE);
+            startService(intent);
+        }
+        Toast.makeText(this, "Background services started", Toast.LENGTH_SHORT).show();
+    }
+
+    public void stopBackgroundServices() {
+        //stop the receiver mockup
+        Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
+        intent.setAction(ReceiverServiceMockup.ACTION_STOP_FOREGROUND_SERVICE);
+        startService(intent);
+
+        //stop the android location service
+        intent = new Intent(MainActivity.this, AndroidLocationService.class);
+        intent.setAction(AndroidLocationService.ACTION_STOP_SERVICE);
+        startService(intent);
+
+        Toast.makeText(this, "Background services stoped", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
@@ -245,5 +325,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    Marker androidMarker;
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        miniMap = googleMap;
+        try {
+            Location androidLatest = AndroidLocationService.getLastKnownLocation(this);
+            LatLng androidLoc = new LatLng(androidLatest.getLongitude(), androidLatest.getLatitude());
+            androidMarker = miniMap.addMarker(new MarkerOptions()
+                    .position(androidLoc)
+                    .title("Android")
+                    .snippet("Snippet")
+                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round)));
+            miniMap.moveCamera(CameraUpdateFactory.newLatLngZoom(androidLoc, 16));
+        } catch (Exception ex) {
+            Log.e(TAG, "onMapReady() Exception: " + ex.getMessage() );
+        }
+    }
 
+/*
+    public void updateMiniMap() {
+        Location androidLatest = AndroidLocationService.getLastKnownLocation(this);
+        androidMarker.setPosition(new LatLng(androidLatest.getLongitude(), androidLatest.getLongitude()));
+
+    }
+*/
 }

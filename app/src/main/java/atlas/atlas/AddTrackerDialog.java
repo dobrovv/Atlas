@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class AddTrackerDialog extends DialogFragment {
     private static final String TAG = "Atlas"+AddTrackerDialog.class.getSimpleName();
@@ -50,6 +51,7 @@ public class AddTrackerDialog extends DialogFragment {
                     startActivity(intent);
                     getDialog().dismiss();
                 } else {
+                    Toast.makeText(getActivity(), "The tracker already exists", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "couldn't add a new tracker to the database");
                     getDialog().dismiss();
                 }

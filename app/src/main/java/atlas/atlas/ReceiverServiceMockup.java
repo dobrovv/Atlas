@@ -138,14 +138,14 @@ public class ReceiverServiceMockup extends Service {
                 case ACTION_START_FOREGROUND_SERVICE:
                     restartTimer();
                     startForegroundService();
-                    Toast.makeText(getApplicationContext(), "Foreground service is started.", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "Foreground service is started.");
+                    //Toast.makeText(getApplicationContext(), "Foreground service is started.", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "ReceiverServiceMockup service is started.");
                     break;
                 case ACTION_STOP_FOREGROUND_SERVICE:
                     stopTimer();
                     stopForegroundService();
-                    Toast.makeText(getApplicationContext(), "Foreground service is stopped.", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "Foreground service is stopped.");
+                    //Toast.makeText(getApplicationContext(), "Foreground service is stopped.", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "ReceiverServiceMockup service is stopped.");
                     break;
             }
         }
