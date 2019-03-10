@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,6 +22,10 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -135,6 +142,68 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 if (trackerMarker != null)
                     trackerMarker.setPosition(new LatLng(Latitude, Longitude));
 
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+
+                try {
+
+                    List<Address> listAddresses = geocoder.getFromLocation(trackerMarker.getPosition().latitude, trackerMarker.getPosition().longitude, 1);
+
+                    if(listAddresses != null && listAddresses.size() >0){
+
+                        Log.i("PlaceInfo", listAddresses.get(0).toString());
+
+                        String address = "";
+
+
+
+
+
+
+
+                        if (listAddresses.get(0).getSubThoroughfare() != null) {
+
+                            address += listAddresses.get(0).getSubThoroughfare() + " ";
+
+                        }
+
+
+
+                        if (listAddresses.get(0).getThoroughfare() != null) {
+
+                            address += listAddresses.get(0).getThoroughfare() + ", ";
+
+                        }
+
+                        if (listAddresses.get(0).getLocality() != null) {
+
+                            address += listAddresses.get(0).getLocality() + ", ";
+
+                        }
+
+                        if (listAddresses.get(0).getPostalCode() != null) {
+
+                            address += listAddresses.get(0).getPostalCode() + ", ";
+
+                        }
+
+                        if (listAddresses.get(0).getCountryName() != null) {
+
+                            address += listAddresses.get(0).getCountryName();
+
+                        }
+
+                        Toast.makeText(MapActivity.this, address, Toast.LENGTH_SHORT).show();
+
+                    }
+
+                } catch (IOException e) {
+
+                    e.printStackTrace();
+
+                }
+
+
                 // or retrieve the data again from the db
                 DatabaseHelper dbh = new DatabaseHelper(getApplicationContext());
                 GPSReading gpsReading = dbh.getLatestGPSReading(TrackerID);
@@ -160,6 +229,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 Location androidLatestLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
                 if(androidMarker != null)
                     androidMarker.setPosition(new LatLng(androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude()));
+
+
 
             // get wheter gps/network location updates are disabled/enabled
             } else if (action.equals(AndroidLocationService.BROADCAST_ACTION_LOCATIONPROVIDER_ENABLED_CHANGE)) {
