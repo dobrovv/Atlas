@@ -17,6 +17,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -108,11 +109,37 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         androidMarker = mMap.addMarker(new MarkerOptions().position(androidLoc).title("Android"));
         trackerMarker = mMap.addMarker(new MarkerOptions().position(trackerLoc).title("TrackerID"+TrackerID));
 
+        //int SelectedImageID =  getResources().getIdentifier("bob", "mipmap", getPackageName());
+        //if(SelectedImageID = )
+        //getResources().getResourceEntryName(selectedImageID);
+
+
         DatabaseHelper dbh = new DatabaseHelper(this);
         Tracker tracker = dbh.getTrackerByID(TrackerID);
-        
 
-        allowedDistanceCircle = mMap.addCircle(new CircleOptions()
+
+        //Set the icon of the marker depending on it's type (depending on image selected in tacker activity)
+        if((tracker.TrackerIcon).equals("ic_tracker_1"))
+            trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.child));
+
+
+        else if((tracker.TrackerIcon).equals("ic_tracker_2"))
+
+            trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pets));
+
+        else if((tracker.TrackerIcon).equals("ic_tracker_3"))
+            trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.item));
+
+
+
+
+
+
+
+
+
+
+            allowedDistanceCircle = mMap.addCircle(new CircleOptions()
                 .center(androidLoc)
                 .radius(tracker.AllowedDistance)
                 .strokeColor(Color.RED)
@@ -142,15 +169,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 if (trackerMarker != null)
                     trackerMarker.setPosition(new LatLng(Latitude, Longitude));
 
+                //Geocoding
                 Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
 
                 try {
-
+                    //Code for Reverse Geocoding (tranforms latitude and longitude coordiantes into street address)
                     List<Address> listAddresses = geocoder.getFromLocation(trackerMarker.getPosition().latitude, trackerMarker.getPosition().longitude, 1);
 
                     if(listAddresses != null && listAddresses.size() >0){
-
+                        // log returning the whole address (indice is zero because we want only one address)
                         Log.i("PlaceInfo", listAddresses.get(0).toString());
 
                         String address = "";
@@ -162,7 +190,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
 
                         if (listAddresses.get(0).getSubThoroughfare() != null) {
-
+                            //returns the street number of the address
                             address += listAddresses.get(0).getSubThoroughfare() + " ";
 
                         }
@@ -170,25 +198,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
 
                         if (listAddresses.get(0).getThoroughfare() != null) {
-
+                            //returns the thoroughfare name of the address
                             address += listAddresses.get(0).getThoroughfare() + ", ";
 
                         }
 
                         if (listAddresses.get(0).getLocality() != null) {
-
+                            //returns the locality of the address
                             address += listAddresses.get(0).getLocality() + ", ";
 
                         }
 
                         if (listAddresses.get(0).getPostalCode() != null) {
-
+                            //returns the postal code
                             address += listAddresses.get(0).getPostalCode() + ", ";
 
                         }
 
                         if (listAddresses.get(0).getCountryName() != null) {
-
+                            //returns the country name
                             address += listAddresses.get(0).getCountryName();
 
                         }
