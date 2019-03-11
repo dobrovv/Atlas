@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class AddTrackerDialog extends DialogFragment {
@@ -19,6 +20,7 @@ public class AddTrackerDialog extends DialogFragment {
 
     //EditText titleEditText;
     EditText trackerIDEdit;
+    TextView trackerIDEditValidation;
     Button cancelButton;
     Button saveButton;
 
@@ -28,10 +30,12 @@ public class AddTrackerDialog extends DialogFragment {
 
 
         trackerIDEdit = view.findViewById(R.id.trackerIDEdit);
+        trackerIDEditValidation = view.findViewById(R.id.trackerIDEditValidation);
         saveButton = view.findViewById(R.id.saveButton);
         cancelButton = view.findViewById(R.id.cancelButton);
 
         saveButton.setEnabled(false);
+        trackerIDEditValidation.setVisibility(View.INVISIBLE);
 
         cancelButton.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -73,8 +77,10 @@ public class AddTrackerDialog extends DialogFragment {
                 String id = s.toString();
                 if (!id.matches("^[0-9a-zA-Z]+$")) {
                     saveButton.setEnabled(false);
+                    trackerIDEditValidation.setVisibility(View.VISIBLE);
                 } else {
                     saveButton.setEnabled(true);
+                    trackerIDEditValidation.setVisibility(View.INVISIBLE);
                 }
             }
         });
