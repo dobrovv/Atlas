@@ -4,12 +4,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class AddTrackerDialog extends DialogFragment {
@@ -17,6 +20,7 @@ public class AddTrackerDialog extends DialogFragment {
 
     //EditText titleEditText;
     EditText trackerIDEdit;
+    TextView trackerIDEditValidation;
     Button cancelButton;
     Button saveButton;
 
@@ -26,8 +30,12 @@ public class AddTrackerDialog extends DialogFragment {
 
 
         trackerIDEdit = view.findViewById(R.id.trackerIDEdit);
+        trackerIDEditValidation = view.findViewById(R.id.trackerIDEditValidation);
         saveButton = view.findViewById(R.id.saveButton);
         cancelButton = view.findViewById(R.id.cancelButton);
+
+        saveButton.setEnabled(false);
+        trackerIDEditValidation.setVisibility(View.INVISIBLE);
 
         cancelButton.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -54,6 +62,25 @@ public class AddTrackerDialog extends DialogFragment {
                     Toast.makeText(getActivity(), "The tracker already exists", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "couldn't add a new tracker to the database");
                     getDialog().dismiss();
+                }
+            }
+        });
+
+        // text changed listner for validatation of the id, valid id contains only 0-9a-zA-Z
+        trackerIDEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override
+            public void afterTextChanged(Editable s) {
+                String id = s.toString();
+                if (!id.matches("^[0-9a-zA-Z]+$")) {
+                    saveButton.setEnabled(false);
+                    trackerIDEditValidation.setVisibility(View.VISIBLE);
+                } else {
+                    saveButton.setEnabled(true);
+                    trackerIDEditValidation.setVisibility(View.INVISIBLE);
                 }
             }
         });
