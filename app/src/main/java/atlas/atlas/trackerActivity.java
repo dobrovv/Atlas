@@ -1,15 +1,20 @@
 package atlas.atlas;
+//package test;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -37,13 +42,36 @@ public class trackerActivity extends AppCompatActivity {
 
     ArrayList<Tracker> TrackerList;
 
+
+
+
+//import android.text.InputFilter;
+
+//import android.text.Spanned;
+// more imports
+
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracker);
 
         trackerNameEdit = findViewById(R.id.TrackerNameEdit);
+
+
+
         allowedDistanceEdit = findViewById(R.id.AllowedDistanceEdit);
+
+
+
+
+
+
+
         saveButton = findViewById(R.id.SaveButton);
         cancelButton = findViewById(R.id.CancelButton);
 
@@ -91,6 +119,16 @@ public class trackerActivity extends AppCompatActivity {
             // fill in the views
             trackerNameEdit.setText(String.valueOf(tracker.TrackerName));
             allowedDistanceEdit.setText(String.valueOf(AllowedDistance));
+
+
+
+
+
+
+
+
+
+
 
             // get the image id from the db, getIdentifier returns 0 if no such resource name exists
             int SelectedImageID =  getResources().getIdentifier(tracker.TrackerIcon, "mipmap", getPackageName());
