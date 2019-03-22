@@ -32,9 +32,9 @@ public class ReceiverServiceMockup extends Service {
 
     // Test data to generate new GPSReadings, arrays must have equal size
     private static String[] TestTrackerIDs = {"00001", "00002", "00003", "00004", "00005"};
-    private static double[] TrackersLatitude = {1e-4,1e-4,-1e-4,-1e-4,-1e-4};
-    private static double[] TrackersLongitude = {-1e-4,1e-4,-1e-4,1e-4,1e-4};
-    private static double[] TrackersSpeed = {1e-6,1e-6,1e-6,1e-6,1e-6,1e-6};
+    private static double[] TrackersLatitude = {1e-3,1e-3,-1e-3,-1e-3,-1e-3};
+    private static double[] TrackersLongitude = {-1e-3,1e-3,-1e-3,1e-3,1e-3};
+    private static double[] TrackersSpeed = {1e-5,1e-5,1e-5,1e-5,1e-5,1e-5};
 
 
     /* Timer that generates new GPSReadings mockups

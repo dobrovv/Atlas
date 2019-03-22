@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -31,6 +32,10 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 
 //comment 12
@@ -101,6 +106,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             // update the tracker list
             trackerListAdapter.updateTracker(TrackerID);
+
+            // update minimap
+            if (gpsReading != null) {
+                updateTrackerMiniMapMarker(TrackerID, new LatLng(gpsReading.Latitude, gpsReading.Longitude));
+            }
         }
     }
     /**
@@ -124,7 +134,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     String info = String.format("NEW_ANDROIDLOCATION Broadcast:" +'\n' + "\tAndroid(provider=%s) (%3.6f, %3.6f)", androidLatestLocation.getProvider(), androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude());
                     mapTextView.setText(info + "\n" + mapTextView.getText());
                 }
-                trackerListAdapter.updateTrackerListViews(); // update tracker items with new android location (for distance calculation)
+                // update tracker items with new android location (for distance calculation)
+                trackerListAdapter.updateTrackerListViews();
+
+                //update minimap
+                updateAndroidMiniMapMarker();
 
                 // get wheter gps/network location updates are disabled/enabled
             } else if (action.equals(AndroidLocationService.BROADCAST_ACTION_LOCATIONPROVIDER_ENABLED_CHANGE)) {
@@ -216,6 +230,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onResume();
         // update the tracker list if the Activity gained focus back without calling the onCreate()
         trackerListAdapter.updateTrackerList();
+        // update the minimap
+        updateAllMiniMapMarkers();
     }
 
     @Override
@@ -325,29 +341,153 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    Marker androidMarker;
+    /**
+     *  Minimap related functions
+     *  The androids marker displayed on the map is stored in the androidMarker
+     *  The markers for each tracker are stored in trackerMarkers (stored in a HashMap, the key is TrackekID)
+     *  to update all markes on the mini map when new data is available call updateAllMiniMapMarkers()
+     *  to update only the andoirMarker call updateAndroidMiniMapMarker()
+     *  to update only one tracker call updateTrackerMiniMapMarker()
+     * */
+    Marker androidMarker; // Marker of the android phone on the minimap
+    HashMap<String, Marker> trackerMarkers; // Markers of the tracked devices, the key is TrackerID;
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         miniMap = googleMap;
+        trackerMarkers = new HashMap<String, Marker>();
         try {
-            Location androidLatest = AndroidLocationService.getLastKnownLocation(this);
-            LatLng androidLoc = new LatLng(androidLatest.getLongitude(), androidLatest.getLatitude());
-            androidMarker = miniMap.addMarker(new MarkerOptions()
-                    .position(androidLoc)
-                    .title("Android")
-                    .snippet("Snippet")
-                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round)));
-            miniMap.moveCamera(CameraUpdateFactory.newLatLngZoom(androidLoc, 16));
+            updateAllMiniMapMarkers();
         } catch (Exception ex) {
             Log.e(TAG, "onMapReady() Exception: " + ex.getMessage() );
         }
     }
 
-/*
-    public void updateMiniMap() {
-        Location androidLatest = AndroidLocationService.getLastKnownLocation(this);
-        androidMarker.setPosition(new LatLng(androidLatest.getLongitude(), androidLatest.getLongitude()));
+    public void updateAndroidMiniMapMarker() {
+        if (miniMap == null)
+            return;
 
+        // update the android marker, getLastKnownLocation may fail if either there are no location permissions or latest location is unknown
+        try {
+            Location androidLatest = AndroidLocationService.getLastKnownLocation(this);
+            LatLng androidLatLng = new LatLng(androidLatest.getLatitude(), androidLatest.getLongitude());
+
+            if (androidMarker == null) { // if androids marker doesn't exist create it here
+                androidMarker = miniMap.addMarker(new MarkerOptions()
+                        .position(androidLatLng)
+                        .title("Android")
+                        .snippet("Snippet")
+                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round)));
+                miniMap.moveCamera(CameraUpdateFactory.newLatLngZoom(androidLatLng, 16));
+            } else { // update the android's marker on the minimap
+                androidMarker.setPosition(androidLatLng);
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "updateAndroidMiniMapMarker() can't update androids location Exception: " + ex.getMessage());
+        }
     }
-*/
+
+    public void updateAllMiniMapMarkers() {
+        // check if minimap is ready
+        if (miniMap == null)
+            return;
+
+        // update androids minimap marker
+        updateAndroidMiniMapMarker();
+
+        DatabaseHelper dbh = new DatabaseHelper(this);
+        ArrayList<Tracker> trackersDB = dbh.getAllTrackers();
+
+        // for each tracker in the db, create/update it's marker on the map
+        for (Tracker tracker : trackersDB) {
+            // get latest gps data for the tracker
+            GPSReading gpsReading = dbh.getLatestGPSReading(tracker.TrackerID);
+
+            if (gpsReading == null) // check if the tracker has a gps reading
+                continue;
+
+            try {
+                LatLng trackerLatLng = new LatLng(gpsReading.Latitude, gpsReading.Longitude);
+                // get image id for the tracker's icon
+                int trackerImageID = getResources().getIdentifier(tracker.TrackerIcon + "_round", "mipmap", getPackageName());
+
+                // if minimap doesn't contain a marker for the tracker, create it here
+                if (!trackerMarkers.containsKey(tracker.TrackerID)) {
+                    // create the marker
+                    Marker trackerMarker = miniMap.addMarker(new MarkerOptions()
+                            .position(trackerLatLng)
+                            .title(String.valueOf(tracker.TrackerName))
+                            .snippet("Distance: ??")
+                            .icon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher)));
+                    // set the marker in the trackerMarkers hashmap
+                    trackerMarkers.put(tracker.TrackerID, trackerMarker);
+
+                } else { // update the trackers's marker on the minimap
+                    Marker trackerMarker = trackerMarkers.get(tracker.TrackerID);
+                    trackerMarker.setPosition(trackerLatLng);
+                    // TODO: updating markers icon here (?) (currently no way of knowing if the user changed the icon)
+                    trackerMarker.setIcon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher));
+                }
+            } catch (Exception ex) {
+                Log.e(TAG, "updateAllMiniMapMarkers() can't update trackers location Exception: " + ex.getMessage());
+            }
+        }
+
+        // check if tracker was deleted from the db, but is still present on the minimap
+        // and delete it from the minimap.
+        try {
+            HashSet<String> trackerIds = new HashSet<String>(); // set that contains tracker ids that are in the db
+            for (Tracker tracker : trackersDB) {
+                trackerIds.add(tracker.TrackerID);
+            }
+
+            // check if trackerMarkers countain TrackerIDs that are not any longer present in the db
+            // and remove them from the minimap
+            for (String markerTrackerID : trackerMarkers.keySet()) {
+                if (!trackerIds.contains(markerTrackerID)) {
+                    // delete the trackers marker from the minimap
+                    trackerMarkers.get(markerTrackerID).remove();
+                    trackerMarkers.remove(markerTrackerID);
+                }
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "updateAllMiniMapMarkers() can't remove deleted tracker from the minimap Exception: " + ex.getMessage());
+        }
+    }
+
+    public void updateTrackerMiniMapMarker(String TrackerID, LatLng newMarkerLatLng) {
+        // check if minimap is ready
+        if (miniMap == null)
+            return;
+
+        try {
+            // chekck if trackerMarkers contains a marker for the Tracker
+            if (trackerMarkers.containsKey(TrackerID)) {
+                // check if database still contains the tracker, if no delete the marker
+                DatabaseHelper dbh = new DatabaseHelper(this);
+                if (!dbh.hasTrackerID(TrackerID)) {
+                    trackerMarkers.get(TrackerID).remove();
+                    trackerMarkers.remove(TrackerID);
+                } else { // update the position of the trackers's marker on the minimap
+                    Marker trackerMarker = trackerMarkers.get(TrackerID);
+
+                    // check if coordinates actually changed and then update
+                    if (!trackerMarker.getPosition().equals(newMarkerLatLng)) {
+                        trackerMarker.setPosition(newMarkerLatLng);
+
+                        // set marker's snippet to display distance
+                        if (androidLatestLocation != null) {
+                            float[] distance = new float[1];
+                            Location.distanceBetween(newMarkerLatLng.latitude, newMarkerLatLng.longitude, androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude(), distance);
+                            trackerMarker.setSnippet("Distance: " + distance[0]);
+                        }
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Log.e(TAG, "updateTrackerMiniMapMarker() can't update trackers location Exception: " + ex.getMessage());
+        }
+    }
+
+
 }
