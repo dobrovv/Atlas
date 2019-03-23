@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,6 +44,11 @@ import java.util.HashSet;
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private static final String TAG = "Atlas"+MainActivity.class.getSimpleName();
+
+
+
+
+
 
     // android location permissions
     private static final String[] LOCATION_PERMS={
@@ -210,6 +216,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //add dividers between tracker items https://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview
         trackerListMain.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
+
+
+
+
+
+
+
         trackerListAdapter = new TrackerListAdapter(this);
         trackerListMain.setAdapter(trackerListAdapter);
 
@@ -220,6 +233,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void run() {
                 trackerListAdapter.updateTrackerListViews(); // update the last seen time
                 trackerListTimer.postDelayed(this, 5300);
+
+
+
+
+
             }
         };
         trackerListTimer.postDelayed(runnable, 5300);
@@ -350,6 +368,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      *  to update only one tracker call updateTrackerMiniMapMarker()
      * */
     Marker androidMarker; // Marker of the android phone on the minimap
+    LatLng trackerLatLng;
     HashMap<String, Marker> trackerMarkers; // Markers of the tracked devices, the key is TrackerID;
 
     @Override
@@ -407,7 +426,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 continue;
 
             try {
-                LatLng trackerLatLng = new LatLng(gpsReading.Latitude, gpsReading.Longitude);
+                  trackerLatLng = new LatLng(gpsReading.Latitude, gpsReading.Longitude);
                 // get image id for the tracker's icon
                 int trackerImageID = getResources().getIdentifier(tracker.TrackerIcon + "_round", "mipmap", getPackageName());
 
@@ -488,6 +507,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.e(TAG, "updateTrackerMiniMapMarker() can't update trackers location Exception: " + ex.getMessage());
         }
     }
+
+
+
 
 
 }
