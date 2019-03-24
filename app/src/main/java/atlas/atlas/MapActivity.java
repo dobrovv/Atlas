@@ -5,14 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
+import android.graphics.Interpolator;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -21,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
@@ -57,13 +61,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
 
+    boolean isMarkerRotating = false;
+
+
+
+
+
     private Polyline currentPolyline;
 
 
     Handler handler = new Handler();
 
 
-    final int MARKER_UPDATE_INTERVAL = 20000;
+    final int MARKER_UPDATE_INTERVAL = 5000;
+
+
+
+    LatLng oldLocation;
 
 
 
@@ -73,13 +87,56 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             //place1.setPosition(new LatLng(22,78));
             //place1 = map.addMarker(new MarkerOptions().position(location));
 
-         //   new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
+            new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
+
+
+
+
+
+
+
+
+
+
+
+
+
+             oldLocation = new LatLng(androidMarker.getPosition().latitude,androidMarker.getPosition().longitude );
+
+
+            //LatLng newLocation = new LatLng(reverseGeocoding.NewLatitude, reverseGeocoding.NewLongitude);
+
+
+
+
+
+
+
+
+          //  float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
+            //rotateMarker(androidMarker, bearing);
+
+
+
+
+
+
+
+
+
 
 
 
             handler.postDelayed(this, MARKER_UPDATE_INTERVAL);
         }
     };
+
+
+
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +164,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         registerReceiver(androidLocationBroadcastsReceiver, intentFilter2);
 
 
+
+
+
+
+
         handler.postDelayed(updateMarker, MARKER_UPDATE_INTERVAL);
+
+
+
 
 
 
@@ -156,6 +221,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         //int SelectedImageID =  getResources().getIdentifier("bob", "mipmap", getPackageName());
         //if(SelectedImageID = )
         //getResources().getResourceEntryName(selectedImageID);
+
+
+
+
+
+
+
+
 
 
 
@@ -230,6 +303,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         buttonShowDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
 
 
 
@@ -364,6 +439,10 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
             }
         }
     }
+
+
+
+
     /**
      *  Broadcast Receiver for androids gps location and changes in gps status
      *  the NEW_ANDROIDLOCATION broadcast contains latitude and longitude, and Provider(gps/network)
@@ -381,8 +460,19 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
             if (action.equals(AndroidLocationService.BROADCAST_ACTION_NEW_ANDROIDLOCATION)) {
                 // get the latest location data, (it's also present in broadcast's intent)
                 Location androidLatestLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
-                if(androidMarker != null)
+                if(androidMarker != null) {
                     androidMarker.setPosition(new LatLng(androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude()));
+                      float bearing = (float) bearingBetweenLocations(oldLocation, androidMarker.getPosition());
+                    rotateMarker(androidMarker, bearing);
+
+
+                    Log.i(TAG, "Updateeee ");
+
+                    //androidMarker.setRotation(bearing);
+
+
+
+                }
 
 
 
@@ -437,6 +527,86 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
 
 
     }
+
+
+
+
+
+
+
+    private double bearingBetweenLocations(LatLng latLng1,LatLng latLng2) {
+
+        double PI = 3.14159;
+        double lat1 = latLng1.latitude * PI / 180;
+        double long1 = latLng1.longitude * PI / 180;
+        double lat2 = latLng2.latitude * PI / 180;
+        double long2 = latLng2.longitude * PI / 180;
+
+        double dLon = (long2 - long1);
+
+        double y = Math.sin(dLon) * Math.cos(lat2);
+        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
+                * Math.cos(lat2) * Math.cos(dLon);
+
+        double brng = Math.atan2(y, x);
+
+        brng = Math.toDegrees(brng);
+        brng = (brng + 360) % 360;
+
+        return brng;
+    }
+
+
+
+    private void rotateMarker(final Marker marker, final float toRotation) {
+        if(!isMarkerRotating) {
+            final Handler handler = new Handler();
+            final long start = SystemClock.uptimeMillis();
+            final float startRotation = marker.getRotation();
+            final long duration = 2000;
+
+            final LinearInterpolator interpolator = new LinearInterpolator();
+
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    isMarkerRotating = true;
+
+                    long elapsed = SystemClock.uptimeMillis() - start;
+                    float t = interpolator.getInterpolation((float) elapsed / duration);
+
+                    float rot = t * toRotation + (1 - t) * startRotation;
+
+                    float bearing =  -rot > 180 ? rot / 2 : rot;
+
+                    marker.setRotation(bearing);
+
+                    Log.d(TAG, "Rotatingggg ");
+
+                    if (t < 1.0) {
+                        // Post again 16ms later.
+                        handler.postDelayed(this, 16);
+                    } else {
+                        isMarkerRotating = false;
+                    }
+                }
+            });
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
