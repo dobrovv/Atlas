@@ -12,16 +12,18 @@ public class GPSReading {
     public Long GPSReadingID;
     public String TrackerID;
     public Long androidTimestamp;
+    public Double serverTimestamp;
     public Double Latitude;
     public Double Longitude;
     public Double Speed;
     public Integer rawDate;
     public Integer rawTime;
 
-    GPSReading(Long id, String trackerID, Long androidTimestamp, Double latitude, Double longitude, Double speed, Integer rawDate, Integer rawTime) {
+    GPSReading(Long id, String trackerID, Long androidTimestamp, Double serverTimestamp, Double latitude, Double longitude, Double speed, Integer rawDate, Integer rawTime) {
         this.GPSReadingID = id;
         this.TrackerID = trackerID;
         this.androidTimestamp = androidTimestamp;
+        this.serverTimestamp = serverTimestamp;
         this.Latitude = latitude;
         this.Longitude = longitude;
         this.Speed = speed;
@@ -32,15 +34,20 @@ public class GPSReading {
     public static GPSReading read_from_dbcursor(Cursor cursor) {
         if (cursor==null) return null;
 
-        Long GPSReadingID = cursor.getLong(cursor.getColumnIndexOrThrow("GPSReadingID"));
-        String TrackerID = cursor.getString(cursor.getColumnIndexOrThrow("TrackerID"));
-        Long androidTimestamp = cursor.getLong(cursor.getColumnIndexOrThrow("androidTimestamp"));
-        Double Latitude = cursor.getDouble(cursor.getColumnIndexOrThrow("Latitude"));
-        Double Longitude = cursor.getDouble(cursor.getColumnIndexOrThrow("Longitude"));
-        Double Speed = cursor.getDouble(cursor.getColumnIndexOrThrow("Speed"));
-        Integer rawDate = cursor.getInt(cursor.getColumnIndexOrThrow("rawDate"));
-        Integer rawTime = cursor.getInt(cursor.getColumnIndexOrThrow("rawTime"));
-        return new GPSReading(GPSReadingID, TrackerID, androidTimestamp, Latitude, Longitude, Speed, rawDate, rawTime);
+        try {
+            Long GPSReadingID = cursor.getLong(cursor.getColumnIndexOrThrow("GPSReadingID"));
+            String TrackerID = cursor.getString(cursor.getColumnIndexOrThrow("TrackerID"));
+            Long androidTimestamp = cursor.getLong(cursor.getColumnIndexOrThrow("androidTimestamp"));
+            Double serverTimestamp = cursor.getDouble(cursor.getColumnIndexOrThrow("serverTimestamp"));
+            Double Latitude = cursor.getDouble(cursor.getColumnIndexOrThrow("Latitude"));
+            Double Longitude = cursor.getDouble(cursor.getColumnIndexOrThrow("Longitude"));
+            Double Speed = cursor.getDouble(cursor.getColumnIndexOrThrow("Speed"));
+            Integer rawDate = cursor.getInt(cursor.getColumnIndexOrThrow("rawDate"));
+            Integer rawTime = cursor.getInt(cursor.getColumnIndexOrThrow("rawTime"));
+            return new GPSReading(GPSReadingID, TrackerID, androidTimestamp, serverTimestamp, Latitude, Longitude, Speed, rawDate, rawTime);
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public ContentValues as_content_values(boolean includeGPSReadingID) {
@@ -50,6 +57,7 @@ public class GPSReading {
         }
         contentValues.put("TrackerID", TrackerID);
         contentValues.put("androidTimestamp", androidTimestamp);
+        contentValues.put("serverTimestamp", serverTimestamp);
         contentValues.put("Latitude", Latitude);
         contentValues.put("Longitude", Longitude);
         contentValues.put("Speed", Speed);
@@ -60,7 +68,7 @@ public class GPSReading {
     }
 
     public String toString() {
-        return String.format("GPSReading(ID=%d TrackerID=\"%s\" Timestamp=%d (%3.6f %3.6f))", GPSReadingID, TrackerID, androidTimestamp, Latitude, Longitude);
+        return String.format("GPSReading(ID=%d TrackerID=\"%s\" Timestamp=%d (%3.6f %3.6f))", GPSReadingID, TrackerID, serverTimestamp, Latitude, Longitude);
     }
 
 }
