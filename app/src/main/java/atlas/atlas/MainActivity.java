@@ -46,10 +46,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private static final String TAG = "Atlas"+MainActivity.class.getSimpleName();
 
 
-
-
-
-
     // android location permissions
     private static final String[] LOCATION_PERMS={
             Manifest.permission.ACCESS_FINE_LOCATION,
@@ -215,15 +211,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         trackerListMain.setLayoutManager(layoutManager);
         //add dividers between tracker items https://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview
         trackerListMain.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-
-
-
-
-
-
-
-        trackerListAdapter = new TrackerListAdapter(this);
+        trackerListAdapter = new TrackerListAdapter(this, this);
         trackerListMain.setAdapter(trackerListAdapter);
 
         // timer to update the tracker list periodically (for the "last seen" time)
@@ -233,11 +221,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void run() {
                 trackerListAdapter.updateTrackerListViews(); // update the last seen time
                 trackerListTimer.postDelayed(this, 5300);
-
-
-
-
-
             }
         };
         trackerListTimer.postDelayed(runnable, 5300);
@@ -314,7 +297,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     public void startBackgroundServices() {
-        Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
+        Intent intent = new Intent(MainActivity.this, ReceiverService.class);
+        intent.setAction(ReceiverService.ACTION_START_FOREGROUND_SERVICE);
+        startService(intent);
+
+        intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
         intent.setAction(ReceiverServiceMockup.ACTION_START_FOREGROUND_SERVICE);
         startService(intent);
 
@@ -330,7 +317,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     public void stopBackgroundServices() {
         //stop the receiver mockup
-        Intent intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
+        Intent intent = new Intent(MainActivity.this, ReceiverService.class);
+        intent.setAction(ReceiverService.ACTION_STOP_FOREGROUND_SERVICE);
+        startService(intent);
+
+        intent = new Intent(MainActivity.this, ReceiverServiceMockup.class);
         intent.setAction(ReceiverServiceMockup.ACTION_STOP_FOREGROUND_SERVICE);
         startService(intent);
 
@@ -368,7 +359,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      *  to update only one tracker call updateTrackerMiniMapMarker()
      * */
     Marker androidMarker; // Marker of the android phone on the minimap
-    LatLng trackerLatLng;
     HashMap<String, Marker> trackerMarkers; // Markers of the tracked devices, the key is TrackerID;
 
     @Override
@@ -426,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 continue;
 
             try {
-                  trackerLatLng = new LatLng(gpsReading.Latitude, gpsReading.Longitude);
+                LatLng trackerLatLng = new LatLng(gpsReading.Latitude, gpsReading.Longitude);
                 // get image id for the tracker's icon
                 int trackerImageID = getResources().getIdentifier(tracker.TrackerIcon + "_round", "mipmap", getPackageName());
 
@@ -502,14 +492,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         }
                     }
                 }
+            } else { // TODO: create the marker here, calling update all for now
+                updateAllMiniMapMarkers();
             }
         } catch (Exception ex) {
             Log.e(TAG, "updateTrackerMiniMapMarker() can't update trackers location Exception: " + ex.getMessage());
         }
     }
-
-
-
-
-
 }

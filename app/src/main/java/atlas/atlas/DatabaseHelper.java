@@ -32,6 +32,7 @@ import java.util.ArrayList;
         GPSReadingID        (Primary Key)
         TrackerID           (id of the tracker
         androidTimestamp    (at what time the GPS reading arrived to the phone) time in millis since epoch (long int)
+        serverTimestamp     (at what time the GPS reading arrived to the server) time in millis since epoch (long int)
         Latitude
         Longitude
         Speed               Speed in kilometers per hour (double)
@@ -42,7 +43,7 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
     public static final String DATABASE_NAME = "atlas-db";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     private static final String TAG = "Atlas"+SQLiteOpenHelper.class.getSimpleName();
 
     public DatabaseHelper(Context context) {
@@ -55,7 +56,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String trackersTable =
                 "CREATE TABLE Trackers(TrackerID CHAR(5) PRIMARY KEY, TrackerName TEXT, TrackerIcon TEXT, AllowedDistance REAL);";
         String gpsReadingsTable =
-                "CREATE TABLE GPSReadings(GPSReadingID INTEGER PRIMARY KEY AUTOINCREMENT, TrackerID VARCHAR(5), androidTimestamp INTEGER, Latitude REAL, Longitude REAL, Speed REAL, rawDate INTEGER, rawTime INTEGER);";
+                "CREATE TABLE GPSReadings(GPSReadingID INTEGER PRIMARY KEY AUTOINCREMENT, TrackerID VARCHAR(5), androidTimestamp INTEGER, serverTimestamp REAL, Latitude REAL, Longitude REAL, Speed REAL, rawDate INTEGER, rawTime INTEGER);";
 
         db.execSQL(trackersTable);
         db.execSQL(gpsReadingsTable);
