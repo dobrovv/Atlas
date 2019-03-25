@@ -500,7 +500,7 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,trackerMarker);
+//ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,trackerMarker);
 
 
 
@@ -542,7 +542,7 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
 
 
                //To change or remove after we get speed from gsm
-               reverseGeocoding.UpdateGeocoder( Latitude,  Longitude);
+               //reverseGeocoding.UpdateGeocoder( Latitude,  Longitude);
 
 
 
