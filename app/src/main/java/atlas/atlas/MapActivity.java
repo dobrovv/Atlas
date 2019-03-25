@@ -273,16 +273,101 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             @Override
             public void onClick(View view) {
 
-                if(reverseGeocoding.NewLatitude != 0 && reverseGeocoding.NewLongitude != 0)
-                reverseGeocoding.getAddress(MapActivity.this);
+               // if(reverseGeocoding.NewLatitude != 0 && reverseGeocoding.NewLongitude != 0)
+                //reverseGeocoding.getAddress(MapActivity.this);
 
-                else{
-                    reverseGeocoding.NewLatitude = Latitude;
-                    reverseGeocoding.NewLongitude = Longitude;
-                    reverseGeocoding.getAddress(MapActivity.this);
+                    try {
+                        Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
+                        //Code for Reverse Geocoding (tranforms latitude and longitude coordiantes into street address)
+                        List<Address> listAddresses = geocoder.getFromLocation(Latitude,Longitude, 1);
+
+                        if(listAddresses != null && listAddresses.size() >0){
+                            // log returning the whole address (index is zero because we want only one address)
+                            Log.i("PlaceInfo", listAddresses.get(0).toString());
+
+                            String address = "";
 
 
+
+
+
+
+
+                            if (listAddresses.get(0).getSubThoroughfare() != null) {
+                                //returns the street number of the address
+                                address += listAddresses.get(0).getSubThoroughfare() + " ";
+
+                            }
+
+
+
+                            if (listAddresses.get(0).getThoroughfare() != null) {
+                                //returns the thoroughfare name of the address
+                                address += listAddresses.get(0).getThoroughfare() + ", ";
+
+                            }
+
+                            if (listAddresses.get(0).getLocality() != null) {
+                                //returns the locality of the address
+                                address += listAddresses.get(0).getLocality() + ", ";
+
+                            }
+
+                            if (listAddresses.get(0).getPostalCode() != null) {
+                                //returns the postal code
+                                address += listAddresses.get(0).getPostalCode() + ", ";
+
+                            }
+
+                            if (listAddresses.get(0).getCountryName() != null) {
+                                //returns the country name
+                                address += listAddresses.get(0).getCountryName()+" ";
+
+                                //parameters of method getDistance can be obviously improved
+
+                                DecimalFormat df = new DecimalFormat("0.####");
+
+                                address += df.format(getDistance(androidMarker.getPosition(),trackerMarker.getPosition()))+" km away";
+
+
+
+
+
+                            }
+
+              // if(OldLatitude !=0 && OldLongitude !=0)
+                {   //returns the speed of the address in #.00 format
+                  //  address += numberFormat.format(speed)+" Km/h";
+
+
+                  //  address += " Latitude"+ NewLatitude +" Longitude"+NewLongitude;
                 }
+
+                            Toast.makeText(MapActivity.this, address, Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    } catch (
+                            IOException e) {
+
+                        e.printStackTrace();
+
+                    }
+
+               // else{
+                 //   reverseGeocoding.NewLatitude = Latitude;
+                   // reverseGeocoding.NewLongitude = Longitude;
+                  //  reverseGeocoding.getAddress(MapActivity.this);
+
+
+
+
+
+
+
+
+
+                //}
 
 
             }
@@ -390,6 +475,9 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
                 Double Longitude = intent.getDoubleExtra("Longitude", 0.0);
 
 
+                //Log.i("ppoosition", Double.toString(Latitude));
+
+
 
 
                //To change or remove after we get speed from gsm
@@ -462,8 +550,9 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
                 Location androidLatestLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
                 if(androidMarker != null) {
                     androidMarker.setPosition(new LatLng(androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude()));
-                      float bearing = (float) bearingBetweenLocations(oldLocation, androidMarker.getPosition());
-                    rotateMarker(androidMarker, bearing);
+                    //if(oldLocation != null )
+                     // float bearing = (float) bearingBetweenLocations(oldLocation, androidMarker.getPosition());
+                   // rotateMarker(androidMarker, bearing);
 
 
                     Log.i(TAG, "Updateeee ");
@@ -531,18 +620,64 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
 
 
 
+    private static double getDistance(LatLng latLngA,LatLng latLngB) {
+
+
+
+        Location locationA = new Location("point A");
+        locationA.setLatitude(latLngA.latitude);
+        locationA.setLongitude(latLngA.longitude);
+        Location locationB = new Location("point B");
+        locationB.setLatitude(latLngB.latitude);
+        locationB.setLongitude(latLngB.longitude);
+
+        double distance = locationA.distanceTo(locationB)/1000;
+
+        return distance;
+
+
+
+        /*double R = 6371000; // for haversine use R = 6372.8 km instead of 6371 km
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                Math.cos(lat1) * Math.cos(lat2) *
+                        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        //double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        // simplify haversine:
+        //return 2 * R * 1000 * Math.asin(Math.sqrt(a));*/
+    }
+
+
+
+
 
 
 
     private double bearingBetweenLocations(LatLng latLng1,LatLng latLng2) {
 
-        double PI = 3.14159;
-        double lat1 = latLng1.latitude * PI / 180;
-        double long1 = latLng1.longitude * PI / 180;
-        double lat2 = latLng2.latitude * PI / 180;
-        double long2 = latLng2.longitude * PI / 180;
 
-        double dLon = (long2 - long1);
+
+        double PI = 3.14159;
+        double lat1;
+        double long1;
+        double lat2 ;
+        double long2 ;
+
+        double dLon;
+
+
+       // if(latLng1.longitude != 0 && latLng1.latitude !=0) {
+            lat1 = latLng1.latitude * PI / 180;
+            long1 = latLng1.longitude * PI / 180;
+            lat2 = latLng2.latitude * PI / 180;
+            long2 = latLng2.longitude * PI / 180;
+       // }
+
+
+
+         dLon = (long2 - long1);
 
         double y = Math.sin(dLon) * Math.cos(lat2);
         double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
