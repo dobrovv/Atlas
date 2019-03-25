@@ -1,11 +1,23 @@
 package atlas.atlas;
 
+
+
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+
+
+import android.hardware.SensorEventListener;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Interpolator;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -38,7 +50,7 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback {
+public  class MapActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback, SensorEventListener{
 
     private static final String TAG = "Atlas"+MapActivity.class.getSimpleName();
 
@@ -61,7 +73,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
 
-    boolean isMarkerRotating = false;
+
 
 
 
@@ -73,7 +85,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     Handler handler = new Handler();
 
 
-    final int MARKER_UPDATE_INTERVAL = 5000;
+    final int MARKER_UPDATE_INTERVAL = 2000;
+
+    final int ANGLE_UPDATE_INTERVAL = 50;
 
 
 
@@ -81,42 +95,54 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
 
+    //private SensorManager senSensorManager;
+    //private Sensor senAccelerometer;
+
+    public    SensorManager mSensorManager;
+    public    Sensor accelerometer;
+    public    Sensor magnetometer;
+
+    //SensorEventListener sensorEventListener;
+
+    public  float[] mAccelerometer = null;
+    public  float[] mGeomagnetic = null;
+
+
+    public static float swRoll;
+    public static float swPitch;
+    public static float swAzimuth;
+
+
+
+    public double azimuth = 0;
+
+
+    boolean ShowDirections = false;
+
+
+
+
+
+
+
+
+
+
+
     Runnable updateMarker = new Runnable() {
         @Override
         public void run() {
-            //place1.setPosition(new LatLng(22,78));
-            //place1 = map.addMarker(new MarkerOptions().position(location));
 
+
+
+            if(ShowDirections)
             new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
 
 
 
 
 
-
-
-
-
-
-
-
-
              oldLocation = new LatLng(androidMarker.getPosition().latitude,androidMarker.getPosition().longitude );
-
-
-            //LatLng newLocation = new LatLng(reverseGeocoding.NewLatitude, reverseGeocoding.NewLongitude);
-
-
-
-
-
-
-
-
-          //  float bearing = (float) bearingBetweenLocations(oldLocation, newLocation);
-            //rotateMarker(androidMarker, bearing);
-
-
 
 
 
@@ -130,6 +156,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             handler.postDelayed(this, MARKER_UPDATE_INTERVAL);
         }
     };
+
+
+    Runnable updateAngle = new Runnable() {
+        @Override
+        public void run() {
+            //place1.setPosition(new LatLng(22,78));
+            //place1 = map.addMarker(new MarkerOptions().position(location));
+
+            androidMarker.setRotation((float)azimuth+(float)180);
+
+
+
+
+
+
+
+            handler.postDelayed(this, ANGLE_UPDATE_INTERVAL);
+        }
+    };
+
+
+
+
 
 
 
@@ -146,6 +195,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+
+
+
+
+
+
 
         gpsReadingBroadcastReceiver = new GPSReadingBroadcastReceiver();
         androidLocationBroadcastsReceiver = new AndroidLocationBroadcastsReceiver();
@@ -171,6 +228,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         handler.postDelayed(updateMarker, MARKER_UPDATE_INTERVAL);
 
+        handler.postDelayed(updateAngle, ANGLE_UPDATE_INTERVAL);
+
 
 
 
@@ -187,6 +246,20 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             AndroidLatitude = intent.getDoubleExtra("AndroidLatitude", 0.0);
             AndroidLongitude = intent.getDoubleExtra("AndroidLongitude", 0.0);
         }
+
+
+
+
+
+        mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
+        accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+
+        mSensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_GAME);
+
+
+
 
     }
 
@@ -213,14 +286,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         LatLng trackerLoc = new LatLng(Latitude, Longitude);
         androidMarker = mMap.addMarker(new MarkerOptions().position(androidLoc).title("Your Location"));
         trackerMarker = mMap.addMarker(new MarkerOptions().position(trackerLoc).title(tracker.TrackerName));
-
-
-        //androidMarker = mMap.addMarker(new MarkerOptions().position(androidLoc).title("Android"));
-        //trackerMarker = mMap.addMarker(new MarkerOptions().position(trackerLoc).title("TrackerID"+TrackerID));
-
-        //int SelectedImageID =  getResources().getIdentifier("bob", "mipmap", getPackageName());
-        //if(SelectedImageID = )
-        //getResources().getResourceEntryName(selectedImageID);
 
 
 
@@ -255,6 +320,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
 
+
+
+
             allowedDistanceCircle = mMap.addCircle(new CircleOptions()
                 .center(androidLoc)
                 .radius(tracker.AllowedDistance)
@@ -273,16 +341,94 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             @Override
             public void onClick(View view) {
 
-                if(reverseGeocoding.NewLatitude != 0 && reverseGeocoding.NewLongitude != 0)
-                reverseGeocoding.getAddress(MapActivity.this);
+               // if(reverseGeocoding.NewLatitude != 0 && reverseGeocoding.NewLongitude != 0)
+                //reverseGeocoding.getAddress(MapActivity.this);
 
-                else{
-                    reverseGeocoding.NewLatitude = Latitude;
-                    reverseGeocoding.NewLongitude = Longitude;
-                    reverseGeocoding.getAddress(MapActivity.this);
+                    try {
+                        Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
+                        //Code for Reverse Geocoding (tranforms latitude and longitude coordiantes into street address)
+                        List<Address> listAddresses = geocoder.getFromLocation(Latitude,Longitude, 1);
+
+                        if(listAddresses != null && listAddresses.size() >0){
+                            // log returning the whole address (index is zero because we want only one address)
+                            Log.i("PlaceInfo", listAddresses.get(0).toString());
+
+                            String address = "";
 
 
+
+
+
+
+
+                            if (listAddresses.get(0).getSubThoroughfare() != null) {
+                                //returns the street number of the address
+                                address += listAddresses.get(0).getSubThoroughfare() + " ";
+
+                            }
+
+
+
+                            if (listAddresses.get(0).getThoroughfare() != null) {
+                                //returns the thoroughfare name of the address
+                                address += listAddresses.get(0).getThoroughfare() + ", ";
+
+                            }
+
+                            if (listAddresses.get(0).getLocality() != null) {
+                                //returns the locality of the address
+                                address += listAddresses.get(0).getLocality() + ", ";
+
+                            }
+
+                            if (listAddresses.get(0).getPostalCode() != null) {
+                                //returns the postal code
+                                address += listAddresses.get(0).getPostalCode() + ", ";
+
+                            }
+
+                            if (listAddresses.get(0).getCountryName() != null) {
+                                //returns the country name
+                                address += listAddresses.get(0).getCountryName()+" ";
+
+                                //parameters of method getDistance can be obviously improved
+
+                                DecimalFormat df = new DecimalFormat("0.####");
+
+                                address += df.format(getDistance(androidMarker.getPosition(),trackerMarker.getPosition()))+" km away";
+
+
+
+
+
+                            }
+
+              // if(OldLatitude !=0 && OldLongitude !=0)
+                {   //returns the speed of the address in #.00 format
+                  //  address += numberFormat.format(speed)+" Km/h";
+
+
+                  //  address += " Latitude"+ NewLatitude +" Longitude"+NewLongitude;
                 }
+
+                            Toast.makeText(MapActivity.this, address, Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    } catch (
+                            IOException e) {
+
+                        e.printStackTrace();
+
+                    }
+
+
+
+
+
+
+
+
 
 
             }
@@ -356,7 +502,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,trackerMarker);
 
-    boolean ShowDirections = false;
+
 
 
 
@@ -390,6 +536,9 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
                 Double Longitude = intent.getDoubleExtra("Longitude", 0.0);
 
 
+                //Log.i("ppoosition", Double.toString(Latitude));
+
+
 
 
                //To change or remove after we get speed from gsm
@@ -407,6 +556,9 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
 
                 if (trackerMarker != null)
                     trackerMarker.setPosition(new LatLng(Latitude, Longitude));
+
+
+
 
 
 
@@ -462,17 +614,11 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
                 Location androidLatestLocation = AndroidLocationService.getLastKnownLocation(getApplicationContext());
                 if(androidMarker != null) {
                     androidMarker.setPosition(new LatLng(androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude()));
-                      float bearing = (float) bearingBetweenLocations(oldLocation, androidMarker.getPosition());
-                    rotateMarker(androidMarker, bearing);
-
-
-                    Log.i(TAG, "Updateeee ");
-
-                    //androidMarker.setRotation(bearing);
 
 
 
                 }
+
 
 
 
@@ -531,83 +677,71 @@ ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,tracke
 
 
 
+    private static double getDistance(LatLng latLngA,LatLng latLngB) {
 
 
 
-    private double bearingBetweenLocations(LatLng latLng1,LatLng latLng2) {
+        Location locationA = new Location("point A");
+        locationA.setLatitude(latLngA.latitude);
+        locationA.setLongitude(latLngA.longitude);
+        Location locationB = new Location("point B");
+        locationB.setLatitude(latLngB.latitude);
+        locationB.setLongitude(latLngB.longitude);
 
-        double PI = 3.14159;
-        double lat1 = latLng1.latitude * PI / 180;
-        double long1 = latLng1.longitude * PI / 180;
-        double lat2 = latLng2.latitude * PI / 180;
-        double long2 = latLng2.longitude * PI / 180;
+        double distance = locationA.distanceTo(locationB)/1000;
 
-        double dLon = (long2 - long1);
+        return distance;
 
-        double y = Math.sin(dLon) * Math.cos(lat2);
-        double x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1)
-                * Math.cos(lat2) * Math.cos(dLon);
 
-        double brng = Math.atan2(y, x);
 
-        brng = Math.toDegrees(brng);
-        brng = (brng + 360) % 360;
-
-        return brng;
     }
 
 
 
-    private void rotateMarker(final Marker marker, final float toRotation) {
-        if(!isMarkerRotating) {
-            final Handler handler = new Handler();
-            final long start = SystemClock.uptimeMillis();
-            final float startRotation = marker.getRotation();
-            final long duration = 2000;
 
-            final LinearInterpolator interpolator = new LinearInterpolator();
 
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    isMarkerRotating = true;
 
-                    long elapsed = SystemClock.uptimeMillis() - start;
-                    float t = interpolator.getInterpolation((float) elapsed / duration);
 
-                    float rot = t * toRotation + (1 - t) * startRotation;
 
-                    float bearing =  -rot > 180 ? rot / 2 : rot;
 
-                    marker.setRotation(bearing);
 
-                    Log.d(TAG, "Rotatingggg ");
+    public void onSensorChanged(SensorEvent event ) {
+        // onSensorChanged gets called for each sensor so we have to remember the values
+        if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            mAccelerometer = event.values;
+        }
 
-                    if (t < 1.0) {
-                        // Post again 16ms later.
-                        handler.postDelayed(this, 16);
-                    } else {
-                        isMarkerRotating = false;
-                    }
-                }
-            });
+        if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            mGeomagnetic = event.values;
+        }
+
+        if (mAccelerometer != null && mGeomagnetic != null) {
+            float R[] = new float[9];
+            float I[] = new float[9];
+            boolean success = SensorManager.getRotationMatrix(R, I, mAccelerometer, mGeomagnetic);
+
+            if (success) {
+                float orientation[] = new float[3];
+                SensorManager.getOrientation(R, orientation);
+                // at this point, orientation contains the azimuth(direction), pitch and roll values.
+                 azimuth = 180 * orientation[0] / Math.PI;
+                double pitch = 180 * orientation[1] / Math.PI;
+                double roll = 180 * orientation[2] / Math.PI;
+            }
         }
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 
 
 }
+
+
+
+
+
