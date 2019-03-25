@@ -121,7 +121,7 @@ public class ReverseGeocoding {
     {
         try {
             //Code for Reverse Geocoding (tranforms latitude and longitude coordiantes into street address)
-            List<Address> listAddresses = geocoder.getFromLocation(NewLatitude, NewLongitude, 1);
+            List<Address> listAddresses = geocoder.getFromLocation(45.6393,-73.7546, 1);
 
             if(listAddresses != null && listAddresses.size() >0){
                 // log returning the whole address (index is zero because we want only one address)
@@ -169,7 +169,10 @@ public class ReverseGeocoding {
 
                 if(OldLatitude !=0 && OldLongitude !=0)
                 {   //returns the speed of the address in #.00 format
-                    address += numberFormat.format(speed)+" Km/h";
+              //      address += numberFormat.format(speed)+" Km/h";
+
+
+                  //  address += " Latitude"+ NewLatitude +" Longitude"+NewLongitude;
                 }
 
                 Toast.makeText(activity, address, Toast.LENGTH_SHORT).show();
