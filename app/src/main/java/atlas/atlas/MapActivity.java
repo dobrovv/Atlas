@@ -135,14 +135,19 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-            if(ShowDirections)
+            if(ShowDirections && androidMarker.getPosition() != oldLocation)
             new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
+
+            else if(!ShowDirections && currentPolyline != null)
+                currentPolyline.remove();
 
 
 
 
 
              oldLocation = new LatLng(androidMarker.getPosition().latitude,androidMarker.getPosition().longitude );
+
+
 
 
 
@@ -458,7 +463,7 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
                 if(!ShowDirections) {
                     ShowDirections = true;
-                    new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
+                   // new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
 
                 }
                 else
