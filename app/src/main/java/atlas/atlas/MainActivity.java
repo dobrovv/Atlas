@@ -220,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void run() {
                 trackerListAdapter.updateTrackerListViews(); // update the last seen time
+                updateAllMiniMapMarkers();
                 trackerListTimer.postDelayed(this, 5300);
             }
         };
@@ -385,9 +386,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 androidMarker = miniMap.addMarker(new MarkerOptions()
                         .position(androidLatLng)
                         .title("Android")
-                        .snippet("Snippet")
-                        .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round)));
-                miniMap.moveCamera(CameraUpdateFactory.newLatLngZoom(androidLatLng, 16));
+                        .snippet("Your location"));
+                trySetMarkerIcon(androidMarker, R.mipmap.ic_launcher_round);
+                        //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round)));
+                miniMap.moveCamera(CameraUpdateFactory.newLatLngZoom(androidLatLng, 15));
             } else { // update the android's marker on the minimap
                 androidMarker.setPosition(androidLatLng);
             }
@@ -426,16 +428,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     Marker trackerMarker = miniMap.addMarker(new MarkerOptions()
                             .position(trackerLatLng)
                             .title(String.valueOf(tracker.TrackerName))
-                            .snippet("Distance: ??")
-                            .icon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher)));
+                            .snippet("Distance: ??"));
+                            //.icon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher)));
+                    trySetMarkerIcon(trackerMarker, trackerImageID);
                     // set the marker in the trackerMarkers hashmap
                     trackerMarkers.put(tracker.TrackerID, trackerMarker);
 
                 } else { // update the trackers's marker on the minimap
                     Marker trackerMarker = trackerMarkers.get(tracker.TrackerID);
                     trackerMarker.setPosition(trackerLatLng);
+                    trackerMarker.setTitle(String.valueOf(tracker.TrackerName));
                     // TODO: updating markers icon here (?) (currently no way of knowing if the user changed the icon)
-                    trackerMarker.setIcon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher));
+                    //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher));
+                    trySetMarkerIcon(trackerMarker, trackerImageID);
                 }
             } catch (Exception ex) {
                 Log.e(TAG, "updateAllMiniMapMarkers() can't update trackers location Exception: " + ex.getMessage());
@@ -499,4 +504,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.e(TAG, "updateTrackerMiniMapMarker() can't update trackers location Exception: " + ex.getMessage());
         }
     }
+
+    void trySetMarkerIcon(Marker marker, int iconId) {
+        try{
+            marker.setIcon(BitmapDescriptorFactory.fromResource((iconId != 0) ? iconId : R.mipmap.ic_launcher));
+        } catch (Exception ex) {
+            Log.e(TAG, "trySetMarkerIcon() can't set icon to tracker's marker Exception: " + ex.getMessage());
+        }
+    }
+
 }
