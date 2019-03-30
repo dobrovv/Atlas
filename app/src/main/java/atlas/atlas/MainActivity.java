@@ -101,16 +101,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             //retrieving the data again from the db to test the db
             DatabaseHelper dbh = new DatabaseHelper(getApplicationContext());
             GPSReading gpsReading = dbh.getLatestGPSReading(TrackerID);
-            String info = String.format("\tTrackerID=\"%s\" (%3.6f, %3.6f)", gpsReading.TrackerID, gpsReading.Latitude, gpsReading.Longitude);
 
-            // add data to textview
-            mapTextView.setText("NEW_GPSREADING Broadcast:" +'\n'+ info + '\n'+ mapTextView.getText());
-
-            // update the tracker list
-            trackerListAdapter.updateTracker(TrackerID);
-
-            // update minimap
             if (gpsReading != null) {
+                String info = String.format("\tTrackerID=\"%s\" (%3.6f, %3.6f)", gpsReading.TrackerID, gpsReading.Latitude, gpsReading.Longitude);
+
+                // add data to textview
+                mapTextView.setText("NEW_GPSREADING Broadcast:" +'\n'+ info + '\n'+ mapTextView.getText());
+
+                // update the tracker list
+                trackerListAdapter.updateTracker(TrackerID);
+
+                // update minimap
                 updateTrackerMiniMapMarker(TrackerID, new LatLng(gpsReading.Latitude, gpsReading.Longitude));
             }
         }
