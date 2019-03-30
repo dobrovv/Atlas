@@ -36,8 +36,8 @@ import java.util.ArrayList;
         Latitude
         Longitude
         Speed               Speed in kilometers per hour (double)
-        integer GSMSignal  (0 or 1)
-        integer GPSSignal  (0 to 30)
+        integer GPSSignal  (0 or 1)
+        integer GSMSignal  (0 to 30)
         integer BatteryLevel (0 to 100)
         integer PowerStatus (0 or 1)
  */

@@ -30,7 +30,7 @@ public class GPSReading {
     public Integer BatteryLevel;
     public Integer PowerStatus;
 
-    GPSReading(Long id, String trackerID, Long androidTimestamp, Double serverTimestamp, Double latitude, Double longitude, Double speed, Integer gSMSignal, Integer gPSSignal, Integer batteryLevel, Integer powerStatus) {
+    GPSReading(Long id, String trackerID, Long androidTimestamp, Double serverTimestamp, Double latitude, Double longitude, Double speed, Integer gPSSignal, Integer gSMSignal , Integer batteryLevel, Integer powerStatus) {
         this.GPSReadingID = id;
         this.TrackerID = trackerID;
         this.androidTimestamp = androidTimestamp;
@@ -38,8 +38,8 @@ public class GPSReading {
         this.Latitude = latitude;
         this.Longitude = longitude;
         this.Speed = speed;
-        this.GSMSignal = gSMSignal;
         this.GPSSignal = gPSSignal;
+        this.GSMSignal = gSMSignal;
         this.BatteryLevel = batteryLevel;
         this.PowerStatus = powerStatus;
     }
@@ -55,11 +55,11 @@ public class GPSReading {
             Double Latitude = cursor.getDouble(cursor.getColumnIndexOrThrow("Latitude"));
             Double Longitude = cursor.getDouble(cursor.getColumnIndexOrThrow("Longitude"));
             Double Speed = cursor.getDouble(cursor.getColumnIndexOrThrow("Speed"));
-            Integer GSMSignal = cursor.getInt(cursor.getColumnIndexOrThrow("GSMSignal"));
             Integer GPSSignal = cursor.getInt(cursor.getColumnIndexOrThrow("GPSSignal"));
+            Integer GSMSignal = cursor.getInt(cursor.getColumnIndexOrThrow("GSMSignal"));
             Integer BatteryLevel = cursor.getInt(cursor.getColumnIndexOrThrow("BatteryLevel"));
             Integer PowerStatus = cursor.getInt(cursor.getColumnIndexOrThrow("PowerStatus"));
-            return new GPSReading(GPSReadingID, TrackerID, androidTimestamp, serverTimestamp, Latitude, Longitude, Speed, GSMSignal, GPSSignal,BatteryLevel,PowerStatus);
+            return new GPSReading(GPSReadingID, TrackerID, androidTimestamp, serverTimestamp, Latitude, Longitude, Speed, GPSSignal, GSMSignal ,BatteryLevel,PowerStatus);
         } catch (Exception ex) {
             Log.d(TAG, "GPSReading.read_from_dbcursor() Exception: " +  ex.getMessage());
             return null;
@@ -77,8 +77,8 @@ public class GPSReading {
         contentValues.put("Latitude", Latitude);
         contentValues.put("Longitude", Longitude);
         contentValues.put("Speed", Speed);
-        contentValues.put("GSMSignal", GSMSignal);
         contentValues.put("GPSSignal", GPSSignal);
+        contentValues.put("GSMSignal", GSMSignal);
         contentValues.put("BatteryLevel", BatteryLevel);
         contentValues.put("PowerStatus", PowerStatus);
 
