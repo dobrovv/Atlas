@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             if (gpsReading != null) {
                 String info = String.format("\tTrackerID=\"%s\" (%3.6f, %3.6f)", gpsReading.TrackerID, gpsReading.Latitude, gpsReading.Longitude);
+                //Log.e(TAG, "Gpsreading:" + gpsReading.GPSSignal + " "+ gpsReading.GSMSignal + " " + gpsReading.BatteryLevel + " " + gpsReading.PowerStatus);
 
                 // add data to textview
                 mapTextView.setText("NEW_GPSREADING Broadcast:" +'\n'+ info + '\n'+ mapTextView.getText());

@@ -90,8 +90,8 @@ public class ReceiverService extends Service {
                                 Double Longitude = jGpsReading.getDouble("Longitude");
                                 Double Latitude = jGpsReading.getDouble("Latitude");
                                 Double serverTimestamp = jGpsReading.getDouble("serverTimestamp");
-                                Integer GSMSignal = jGpsReading.getInt("GSMSignal");
                                 Integer GPSSignal = jGpsReading.getInt("GPSSignal");
+                                Integer GSMSignal = jGpsReading.getInt("GSMSignal");
                                 Integer BatteryLevel = jGpsReading.getInt("BatteryLevel");
                                 Integer PowerStatus = jGpsReading.getInt("PowerStatus");
 
@@ -104,7 +104,7 @@ public class ReceiverService extends Service {
                                 GPSReading latestGpsReading = dbh.getLatestGPSReading(TrackerID);
 
                                 if (latestGpsReading == null || latestGpsReading.serverTimestamp + 0.1f < serverTimestamp ) {
-                                    GPSReading serverGPSReading = new GPSReading(0L, TrackerID, currentTimeMillis(), serverTimestamp, Latitude, Longitude, 0.0, GSMSignal,GPSSignal, BatteryLevel, PowerStatus);
+                                    GPSReading serverGPSReading = new GPSReading(0L, TrackerID, currentTimeMillis(), serverTimestamp, Latitude, Longitude, 0.0, GPSSignal,GSMSignal, BatteryLevel, PowerStatus);
                                     Long newGpsReadingId = dbh.addGPSReading(serverGPSReading);
                                     sendNewGPSReadingBroadcast(newGpsReadingId, TrackerID, Latitude, Longitude);
                                     Log.d(TAG, "Updating: " + TrackerID + jGpsReading);
