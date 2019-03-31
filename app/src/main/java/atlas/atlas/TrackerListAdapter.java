@@ -27,9 +27,11 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
     private static final String TAG = "Atlas"+TrackerListAdapter.class.getSimpleName();
 
     Context context;
+    MainActivity mainActivity; // storing MainActivity reference, to update the minimap when tracker is deleted
     ArrayList<Tracker> adapterTrackerList;
     ArrayList<GPSReading> adapterGpsReadings; // stores a GPSReading for each adapter in adapterTrackerList, must have same size
     Location latestAndroidLocation; // may be null
+
 
     public class TrackerViewHolder extends RecyclerView.ViewHolder {
         protected TextView trackerIDTextView;
@@ -56,9 +58,10 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         }
     }
 
-    public TrackerListAdapter(Context context) {
+    public TrackerListAdapter(Context context, MainActivity mainActivity) {
 
         this.context = context;
+        this.mainActivity = mainActivity;
         getDataFromDB();
 
         latestAndroidLocation = AndroidLocationService.getLastKnownLocation(context);
@@ -216,6 +219,8 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                     //delete the tracker
                     Tracker t = adapterTrackerList.get(i);
                     deleteTracker(t.TrackerID);
+                    if (mainActivity != null)
+                        mainActivity.updateAllMiniMapMarkers();
                 } catch (Exception ex) {
                     Log.e(TAG, "Delete Button: Exception " + ex.getMessage() );
                 }

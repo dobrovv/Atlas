@@ -21,14 +21,12 @@ import java.util.Random;
 public class ReceiverServiceMockup extends Service {
     private static final String TAG = "Atla"+ReceiverServiceMockup.class.getSimpleName();
 
-    public static final int ONGOING_NOTIFICATION_ID = 1; // id of the displayed notification
-
     public static final String ACTION_START_FOREGROUND_SERVICE = "ACTION_START_FOREGROUND_SERVICE";
     public static final String ACTION_STOP_FOREGROUND_SERVICE = "ACTION_STOP_FOREGROUND_SERVICE";
 
     public static final String BROADCAST_ACTION_NEW_GPSREADING = "BROADCAST_ACTION_NEW_GPSREADING";
 
-    private static final int BROADCAST_DELAY_MS = 1000; // frequency of the gps broadcasts in milliseconds
+    private static final int BROADCAST_DELAY_MS = 3000; // frequency of the gps broadcasts in milliseconds
 
     // Test data to generate new GPSReadings, arrays must have equal size
     private static String[] TestTrackerIDs = {"00001", "00002", "00003", "00004", "00005"};
@@ -73,7 +71,12 @@ public class ReceiverServiceMockup extends Service {
                 Longitude += latestAndroidLocation.getLongitude();
             }
 
-            GPSReading newGpsReading = new GPSReading(0L, TrackerID, currentTimeMillis(), Latitude, Longitude, TrackersSpeed[id], 0, 0);
+            Integer GPSSignal =  rnd.nextInt(2); // (0 or 1)
+            Integer GSMSignal = rnd.nextInt(31);  //(0 to 30)
+            Integer BatteryLevel = rnd.nextInt(101); //(0 to 100)
+            Integer PowerStatus = rnd.nextInt(2);//(0 or 1)
+
+            GPSReading newGpsReading = new GPSReading(0L, TrackerID, currentTimeMillis(), currentTimeMillis() * 1., Latitude, Longitude, TrackersSpeed[id], GPSSignal, GSMSignal, BatteryLevel, PowerStatus);
 
             // get database handler
             DatabaseHelper dbh = new DatabaseHelper(getApplicationContext());
@@ -156,34 +159,19 @@ public class ReceiverServiceMockup extends Service {
     /* Used to build and start foreground service. */
     private void startForegroundService()
     {
-        Log.d(TAG, "Starting foreground service.");
-
-        // build the notification
-        Intent notificationIntent = new Intent();
-        PendingIntent pendingIntent =
-                PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        //TODO: doesn't work on api 28 (needs a notification channel)
-        Notification notification =
-                new Notification.Builder(this)
-                        .setContentTitle("Notification title")
-                        .setContentText("Notification text")
-                        .setSmallIcon(R.drawable.ic_service_notification)
-                        .setContentIntent(pendingIntent)
-                        //.setTicker(getText(R.string.ticker_text))
-                        .build();
+        Log.d(TAG, "Starting mockup service.");
 
         // start foreground service
-        startForeground(ONGOING_NOTIFICATION_ID, notification);
+        //startForeground(ONGOING_NOTIFICATION_ID, notification);
     }
 
     private void stopForegroundService()
     {
-        Log.d(TAG, "Stopping foreground service.");
+        Log.d(TAG, "Stopping mockup service.");
         // Stop foreground service and remove the notification.
-        stopForeground(true);
+        //stopForeground(true);
 
-        // Stop the foreground service.
+        // Stop the mockup service.
         stopSelf();
     }
 }
