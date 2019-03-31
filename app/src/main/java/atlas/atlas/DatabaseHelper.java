@@ -28,6 +28,8 @@ import java.util.ArrayList;
         TrackerName
         TrackerIcon
         AllowedDistance
+        TrackerType
+        EnableNotification
     GPSReadings Table
         GPSReadingID        (Primary Key)
         TrackerID           (id of the tracker
@@ -45,7 +47,7 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
     public static final String DATABASE_NAME = "atlas-db";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     private static final String TAG = "Atlas"+DatabaseHelper.class.getSimpleName();
 
     public DatabaseHelper(Context context) {
@@ -56,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String trackersTable =
-                "CREATE TABLE Trackers(TrackerID CHAR(32) PRIMARY KEY, TrackerName TEXT, TrackerIcon TEXT, AllowedDistance REAL);";
+                "CREATE TABLE Trackers(TrackerID CHAR(32) PRIMARY KEY, TrackerName TEXT, TrackerIcon TEXT, AllowedDistance REAL, TrackerType VARCHAR(32), EnableNotification INTEGER);";
         String gpsReadingsTable =
                 "CREATE TABLE GPSReadings(GPSReadingID INTEGER PRIMARY KEY AUTOINCREMENT, TrackerID VARCHAR(32), androidTimestamp INTEGER, serverTimestamp REAL, Latitude REAL, Longitude REAL, Speed REAL, GSMSignal INTEGER, GPSSignal INTEGER, BatteryLevel INTEGER, PowerStatus INTEGER);";
 

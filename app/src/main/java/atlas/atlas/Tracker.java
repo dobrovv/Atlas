@@ -13,12 +13,16 @@ public class Tracker {
     public String TrackerName;
     public String TrackerIcon;
     public Double AllowedDistance;
+    public String TrackerType;
+    public Integer EnableNotification;
 
-    Tracker(String id, String name, String icon, Double allowedDistance) {
+    Tracker(String id, String name, String icon, Double allowedDistance, String trackerType, Integer enableNotification) {
         this.TrackerID = id;
         this.TrackerName = name;
         this.TrackerIcon = icon;
         this.AllowedDistance = allowedDistance;
+        this.TrackerType = trackerType;
+        this.EnableNotification = enableNotification;
     }
 
     public static Tracker read_from_dbcursor(Cursor cursor) {
@@ -28,8 +32,10 @@ public class Tracker {
         String TrackerName = cursor.getString(cursor.getColumnIndexOrThrow("TrackerName"));
         String TrackerIcon = cursor.getString(cursor.getColumnIndexOrThrow("TrackerIcon"));
         Double AllowedDistance = cursor.getDouble(cursor.getColumnIndexOrThrow("AllowedDistance"));
+        String TrackerType = cursor.getString(cursor.getColumnIndexOrThrow("TrackerType"));
+        Integer EnableNotification = cursor.getInt(cursor.getColumnIndexOrThrow("EnableNotification"));
 
-        Tracker tracker = new Tracker(TrackerID, TrackerName, TrackerIcon, AllowedDistance);
+        Tracker tracker = new Tracker(TrackerID, TrackerName, TrackerIcon, AllowedDistance, TrackerType, EnableNotification);
 
         return tracker;
     }
@@ -40,6 +46,8 @@ public class Tracker {
         contentValues.put("TrackerName", TrackerName);
         contentValues.put("TrackerIcon", TrackerIcon);
         contentValues.put("AllowedDistance", AllowedDistance);
+        contentValues.put("TrackerType", TrackerType);
+        contentValues.put("EnableNotification", EnableNotification);
         return contentValues;
     }
 
