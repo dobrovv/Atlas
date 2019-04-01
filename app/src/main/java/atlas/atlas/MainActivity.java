@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
@@ -15,12 +16,14 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     RecyclerView trackerListMain;
     TrackerListAdapter trackerListAdapter;
     Handler trackerListTimer; // handler for the timer to update the tracker list each second
-
+   swipeControl swipeControl = null;
     // map
     TextView mapTextView; // placeholder, use for debugging
     View miniMapView;
@@ -159,11 +162,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        setupRecyclerView();
         trackerListMain = findViewById(R.id.trackerListMain);
+        trackerListMain.setBackgroundColor(android.R.color.holo_red_dark);
+        RelativeLayout layout = new RelativeLayout(this);
+       // layout = findViewById(R.id.RLayout);
+       // layout.setBackgroundColor(android.R.color.white);
         //startServiceButton = findViewById(R.id.startServiceButton);
         //stopServiceButton = findViewById(R.id.stopServiceButton);
-
+Context context;
         // add minimap layout
         mapTextView = findViewById(R.id.mapTextView);
         miniMapView = findViewById(R.id.miniMapView);
@@ -205,14 +212,57 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });*/
 
         // display the trackers list
+
         trackerListMain.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         trackerListMain.setLayoutManager(layoutManager);
+        ItemTouchHelper ith = new ItemTouchHelper(swipeControl);
+        try {
+            ith.attachToRecyclerView(trackerListMain);
+
+            trackerListMain.setBackgroundColor(android.R.color.white);
+        } catch(Exception ex){
+            Log.e(TAG, "ItemTouchHolder can't connect to recyclerView: " + ex.getMessage());
+        }
         //add dividers between tracker items https://stackoverflow.com/questions/24618829/how-to-add-dividers-and-spaces-between-items-in-recyclerview
         trackerListMain.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         trackerListAdapter = new TrackerListAdapter(this, this);
         trackerListMain.setAdapter(trackerListAdapter);
+
+
+        }
+    private void setupRecyclerView(){
+        RecyclerView recyclerView = (RecyclerView)findViewById(R.id.trackerListMain);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(trackerListAdapter);
+
+        swipeControl = new swipeControl(new swipeControllerActions() {
+            @Override
+            public void onRightClicked(int position) {
+
+                Toast.makeText(MainActivity.this, " Delete! pos " + position, Toast.LENGTH_SHORT).show();
+                trackerListAdapter.deleteTracker(position);
+                //trackerListAdapter.notifyItemRangeChanged(position,);
+
+            }
+            public void onLeftClicked(int position) {
+
+                Toast.makeText(MainActivity.this, " Info!!", Toast.LENGTH_SHORT).show();
+                trackerListAdapter.editButtonClick(position);
+            }
+        });
+
+        ItemTouchHelper itemTouchhelper = new ItemTouchHelper(swipeControl);
+        itemTouchhelper.attachToRecyclerView(trackerListMain);
+
+        recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                swipeControl.onDraw(c);
+            }
+        });
 
         // timer to update the tracker list periodically (for the "last seen" time)
         trackerListTimer = new Handler();
@@ -225,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         };
         trackerListTimer.postDelayed(runnable, 5300);
+
     }
 
     @Override
@@ -232,6 +283,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onResume();
         // update the tracker list if the Activity gained focus back without calling the onCreate()
         trackerListAdapter.updateTrackerList();
+
         // update the minimap
         updateAllMiniMapMarkers();
     }

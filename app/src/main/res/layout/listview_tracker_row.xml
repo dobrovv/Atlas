@@ -2,10 +2,11 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/RLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
-    android:background="#66d0eed0">
+    android:background="@color/common_google_signin_btn_text_dark_default">
 
     <LinearLayout
         android:id="@+id/linearlayout"
@@ -13,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="6dp"
+        android:layout_marginStart="51dp"
         android:layout_marginTop="0dp"
         android:orientation="vertical">
 
@@ -34,6 +35,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/trackerImageView"
+            android:layout_alignBottom="@+id/linearlayout"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
@@ -55,16 +57,31 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textSize="18sp" />
 
+    <ImageView
+        android:id="@+id/trackerStatus"
+        android:layout_width="35dp"
+        android:layout_height="33dp"
+        android:layout_alignEnd="@+id/linearlayout"
+        android:layout_alignBottom="@+id/linearlayout"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="35dp"
+        android:adjustViewBounds="false"
+        app:srcCompat="@drawable/userstateoff" />
+
     <TextView
         android:id="@+id/timestampTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="22dp"
         android:layout_below="@+id/trackerDistanceTextView"
-        android:layout_alignBottom="@+id/trackerDeleteButton"
+        android:layout_alignBottom="@+id/trackerStatus"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="79dp"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="2dp"
+        android:layout_marginBottom="-25dp"
         android:layout_toEndOf="@+id/linearlayout"
         android:text="Timestamp here"
         android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -81,23 +98,18 @@
         android:text="Distance here"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <Button
-        android:id="@+id/trackerEditButton"
+    <ImageView
+        android:id="@+id/battery"
         android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_height="63dp"
+        android:layout_alignBottom="@+id/timestampTextView"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="6dp"
-        android:layout_marginEnd="7dp"
-        android:text="Edit" />
-
-    <Button
-        android:id="@+id/trackerDeleteButton"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_below="@+id/trackerEditButton"
-        android:layout_alignEnd="@+id/trackerEditButton"
-        android:text="delete"
-        android:textColor="#FF0000" />
+        android:layout_marginStart="310dp"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginBottom="13dp"
+        app:srcCompat="@drawable/levelofb" />
 
 </RelativeLayout>

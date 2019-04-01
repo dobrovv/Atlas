@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,9 +41,10 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         protected TextView timestampTextView;
         protected TextView trackerDistanceTextView;
         protected ImageView trackerImageView;
-        protected Button    trackerEditButton;
-        protected Button    trackerDeleteButton;
-
+     //   protected Button    trackerEditButton;
+      //  protected Button    trackerDeleteButton;
+        protected ImageView trackerStatusImage;
+        protected ImageView battery;
 
         public TrackerViewHolder(View itemView) {
             super(itemView);
@@ -49,12 +52,16 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
             trackerNameTextView = (TextView) itemView.findViewById(R.id.trackerNameTextView);
             trackerImageView = (ImageView) itemView.findViewById(R.id.trackerImageView);
             // from GPSReadings
+            trackerStatusImage =(ImageView) itemView.findViewById(R.id.trackerStatus);
             timestampTextView = (TextView) itemView.findViewById(R.id.timestampTextView);
             // from AndroidLocationService
             trackerDistanceTextView = (TextView) itemView.findViewById(R.id.trackerDistanceTextView);
             //buttons
-            trackerEditButton = (Button) itemView.findViewById(R.id.trackerEditButton);
-            trackerDeleteButton = (Button) itemView.findViewById(R.id.trackerDeleteButton);
+            battery = (ImageView) itemView.findViewById(R.id.battery);
+       //     trackerEditButton = (Button) itemView.findViewById(R.id.trackerEditButton);
+         //   trackerDeleteButton = (Button) itemView.findViewById(R.id.trackerDeleteButton);
+
+
         }
     }
 
@@ -122,6 +129,31 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         }
     }
 
+    public void deleteTracker(int pos) {
+        try {
+            Tracker tracker = adapterTrackerList.get(pos);
+            DatabaseHelper dbh = new DatabaseHelper(context);
+            dbh.deleteTracker(tracker.TrackerID);
+            adapterTrackerList.remove(pos);
+            adapterGpsReadings.remove(pos);
+            notifyItemRemoved(pos);
+        } catch (Exception ex) {
+            Log.e(TAG, "deleteTracker(): Exception " + ex.getMessage() );
+        }
+    }
+
+    public void editButtonClick(int pos) {
+        try {
+            // go to the trackerActivity
+            Tracker t = adapterTrackerList.get(pos);
+            Intent intent = new Intent(context, trackerActivity.class);
+            intent.putExtra("TrackerID", t.TrackerID); // add TrackerID to the intent send to the trackerActivity
+            context.startActivity(intent);
+        } catch (Exception ex) {
+            Log.e(TAG, "Edit Button: Exception " + ex.getMessage() );
+        }
+    }
+
     // update all trackers
     public void updateTrackerList() {
         latestAndroidLocation = AndroidLocationService.getLastKnownLocation(context);
@@ -162,6 +194,10 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                 itemViewHolder.trackerNameTextView.setText(tracker.TrackerName);
             }
 
+            //set tracker on/off  status image
+            boolean offline = true;
+            if(offline){ itemViewHolder.trackerStatusImage.setImageResource(R.drawable.userstateon);}
+
             // set tracker icon
             if(tracker.TrackerIcon == null || tracker.TrackerIcon.isEmpty()) {
                 itemViewHolder.trackerImageView.setImageResource(R.drawable.ic_launcher_foreground);
@@ -196,7 +232,7 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
         }
 
         // Edit button onClick listener
-        itemViewHolder.trackerEditButton.setOnClickListener(new View.OnClickListener(){
+      /*  itemViewHolder.trackerEditButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 try {
@@ -209,10 +245,10 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                     Log.e(TAG, "Edit Button: Exception " + ex.getMessage() );
                 }
             }
-        });
+        });*/
 
         // Delete button onClick listener
-        itemViewHolder.trackerDeleteButton.setOnClickListener(new View.OnClickListener(){
+/*        itemViewHolder.trackerDeleteButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 try {
@@ -225,7 +261,7 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                     Log.e(TAG, "Delete Button: Exception " + ex.getMessage() );
                 }
             }
-        });
+        });*/
 
         itemViewHolder.trackerImageView.setOnClickListener(new View.OnClickListener() {
             @Override
