@@ -71,7 +71,12 @@ public class ReceiverServiceMockup extends Service {
                 Longitude += latestAndroidLocation.getLongitude();
             }
 
-            GPSReading newGpsReading = new GPSReading(0L, TrackerID, currentTimeMillis(), currentTimeMillis() * 1., Latitude, Longitude, TrackersSpeed[id], 0, 0);
+            Integer GPSSignal =  rnd.nextInt(2); // (0 or 1)
+            Integer GSMSignal = rnd.nextInt(31);  //(0 to 30)
+            Integer BatteryLevel = rnd.nextInt(101); //(0 to 100)
+            Integer PowerStatus = rnd.nextInt(2);//(0 or 1)
+
+            GPSReading newGpsReading = new GPSReading(0L, TrackerID, currentTimeMillis(), currentTimeMillis() * 1., Latitude, Longitude, TrackersSpeed[id], GPSSignal, GSMSignal, BatteryLevel, PowerStatus);
 
             // get database handler
             DatabaseHelper dbh = new DatabaseHelper(getApplicationContext());

@@ -2,13 +2,22 @@ package atlas.atlas;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.util.Log;
 
 /* GPSReading
  * Class used by the database helper to return information
  * Parameters are described in DatabaseHelper
  * */
 
+//"CREATE TABLE GPSReadings(GPSReadingID INTEGER PRIMARY KEY AUTOINCREMENT,
+// TrackerID VARCHAR(5), androidTimestamp INTEGER, serverTimestamp REAL, Latitude REAL,
+// Longitude REAL, Speed REAL, GSMSignal INTEGER, GPSSignal INTEGER, BatteryLevel INTEGER, PowerStatus INTEGER);";
+
+
 public class GPSReading {
+
+    private static final String TAG = "Atlas"+DatabaseHelper.class.getSimpleName();
+
     public Long GPSReadingID;
     public String TrackerID;
     public Long androidTimestamp;
@@ -16,10 +25,12 @@ public class GPSReading {
     public Double Latitude;
     public Double Longitude;
     public Double Speed;
-    public Integer rawDate;
-    public Integer rawTime;
+    public Integer GSMSignal;
+    public Integer GPSSignal;
+    public Integer BatteryLevel;
+    public Integer PowerStatus;
 
-    GPSReading(Long id, String trackerID, Long androidTimestamp, Double serverTimestamp, Double latitude, Double longitude, Double speed, Integer rawDate, Integer rawTime) {
+    GPSReading(Long id, String trackerID, Long androidTimestamp, Double serverTimestamp, Double latitude, Double longitude, Double speed, Integer gPSSignal, Integer gSMSignal , Integer batteryLevel, Integer powerStatus) {
         this.GPSReadingID = id;
         this.TrackerID = trackerID;
         this.androidTimestamp = androidTimestamp;
@@ -27,8 +38,10 @@ public class GPSReading {
         this.Latitude = latitude;
         this.Longitude = longitude;
         this.Speed = speed;
-        this.rawDate = rawDate;
-        this.rawTime = rawTime;
+        this.GPSSignal = gPSSignal;
+        this.GSMSignal = gSMSignal;
+        this.BatteryLevel = batteryLevel;
+        this.PowerStatus = powerStatus;
     }
 
     public static GPSReading read_from_dbcursor(Cursor cursor) {
@@ -42,10 +55,13 @@ public class GPSReading {
             Double Latitude = cursor.getDouble(cursor.getColumnIndexOrThrow("Latitude"));
             Double Longitude = cursor.getDouble(cursor.getColumnIndexOrThrow("Longitude"));
             Double Speed = cursor.getDouble(cursor.getColumnIndexOrThrow("Speed"));
-            Integer rawDate = cursor.getInt(cursor.getColumnIndexOrThrow("rawDate"));
-            Integer rawTime = cursor.getInt(cursor.getColumnIndexOrThrow("rawTime"));
-            return new GPSReading(GPSReadingID, TrackerID, androidTimestamp, serverTimestamp, Latitude, Longitude, Speed, rawDate, rawTime);
+            Integer GPSSignal = cursor.getInt(cursor.getColumnIndexOrThrow("GPSSignal"));
+            Integer GSMSignal = cursor.getInt(cursor.getColumnIndexOrThrow("GSMSignal"));
+            Integer BatteryLevel = cursor.getInt(cursor.getColumnIndexOrThrow("BatteryLevel"));
+            Integer PowerStatus = cursor.getInt(cursor.getColumnIndexOrThrow("PowerStatus"));
+            return new GPSReading(GPSReadingID, TrackerID, androidTimestamp, serverTimestamp, Latitude, Longitude, Speed, GPSSignal, GSMSignal ,BatteryLevel,PowerStatus);
         } catch (Exception ex) {
+            Log.d(TAG, "GPSReading.read_from_dbcursor() Exception: " +  ex.getMessage());
             return null;
         }
     }
@@ -61,8 +77,10 @@ public class GPSReading {
         contentValues.put("Latitude", Latitude);
         contentValues.put("Longitude", Longitude);
         contentValues.put("Speed", Speed);
-        contentValues.put("rawDate", rawDate);
-        contentValues.put("rawTime", rawTime);
+        contentValues.put("GPSSignal", GPSSignal);
+        contentValues.put("GSMSignal", GSMSignal);
+        contentValues.put("BatteryLevel", BatteryLevel);
+        contentValues.put("PowerStatus", PowerStatus);
 
         return contentValues;
     }
