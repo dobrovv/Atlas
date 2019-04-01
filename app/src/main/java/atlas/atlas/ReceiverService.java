@@ -405,7 +405,8 @@ public class ReceiverService extends Service {
             // get image id for the tracker's icon
             int trackerImageID = getResources().getIdentifier(tracker.TrackerIcon + "_round", "mipmap", getPackageName());
             trackerImageID = (trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher;
-            Bitmap trackerIcon = BitmapFactory.decodeResource(getResources(), trackerImageID);
+            //Bitmap trackerIcon = BitmapFactory.decodeResource(getResources(), trackerImageID);
+            Bitmap trackerIcon = Tracker.getBitmapFromID(this, trackerImageID);
             builder.setLargeIcon(trackerIcon);
         } catch (Exception ex) {
             Log.e(TAG, "Cant't set trackerIcon for notification Exception:" + ex.getMessage());

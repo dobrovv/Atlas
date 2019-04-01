@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
@@ -509,7 +510,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     void trySetMarkerIcon(Marker marker, int iconId) {
         try{
-            marker.setIcon(BitmapDescriptorFactory.fromResource((iconId != 0) ? iconId : R.mipmap.ic_launcher));
+            //marker.setIcon(BitmapDescriptorFactory.fromResource((iconId != 0) ? iconId : R.mipmap.ic_launcher));
+            Bitmap trackerBitmapIcon = Tracker.getBitmapFromID(getApplicationContext(), iconId);
+            trackerBitmapIcon = Bitmap.createScaledBitmap(trackerBitmapIcon, 125, 125, false);
+            marker.setIcon(BitmapDescriptorFactory.fromBitmap(trackerBitmapIcon));
         } catch (Exception ex) {
             Log.e(TAG, "trySetMarkerIcon() can't set icon to tracker's marker Exception: " + ex.getMessage());
         }
