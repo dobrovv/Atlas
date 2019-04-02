@@ -1,7 +1,8 @@
 package atlas.atlas;
 
 
-
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 
@@ -21,8 +22,14 @@ import android.hardware.SensorManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,14 +52,17 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
-public  class MapActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback, SensorEventListener{
+public class MapActivity extends FragmentActivity implements OnMapReadyCallback, TaskLoadedCallback, SensorEventListener {
 
-    private static final String TAG = "Atlas"+MapActivity.class.getSimpleName();
+    private static final String TAG = "Atlas" + MapActivity.class.getSimpleName();
 
     private GoogleMap mMap;
     String TrackerID;
@@ -71,41 +81,31 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
     AndroidLocationBroadcastsReceiver androidLocationBroadcastsReceiver;
 
 
-
-
-
-
-
-
-
-
     private Polyline currentPolyline;
 
 
     Handler handler = new Handler();
 
 
-    final int MARKER_UPDATE_INTERVAL = 2000;
+    final int DIRECTIONS_UPDATE_INTERVAL = 2000;
 
     final int ANGLE_UPDATE_INTERVAL = 50;
-
 
 
     LatLng oldLocation;
 
 
-
     //private SensorManager senSensorManager;
     //private Sensor senAccelerometer;
 
-    public    SensorManager mSensorManager;
-    public    Sensor accelerometer;
-    public    Sensor magnetometer;
+    public SensorManager mSensorManager;
+    public Sensor accelerometer;
+    public Sensor magnetometer;
 
     //SensorEventListener sensorEventListener;
 
-    public  float[] mAccelerometer = null;
-    public  float[] mGeomagnetic = null;
+    public float[] mAccelerometer = null;
+    public float[] mGeomagnetic = null;
 
 
     public static float swRoll;
@@ -113,27 +113,178 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
     public static float swAzimuth;
 
 
-
     public double azimuth = 0;
 
 
     boolean ShowDirections = false;
 
+    boolean internetLoop = true;
+
+
+    //Location Androidlocation;
+
+    LocationListener locationListener;
+
+
+    // Handler to update the routes
+    Handler fetchDirections = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (msg.what != 1) { // code if not connected
+
+                // internetLoop = true;
+
+
+                if (ShowDirections) {
+                    if (internetLoop)
+                        Toast.makeText(MapActivity.this, "No internet available", Toast.LENGTH_SHORT).show();
+                    internetLoop = false;
+
+                } else if (/*!ShowDirections &&*/ currentPolyline != null)
+                    currentPolyline.remove();
+
+
+                //Location prevLoc = android;
+                //Location newLoc = ... ;
+                //float bearing = prevLoc.bearingTo(newLoc) ;
+
+
+                oldLocation = new LatLng(androidMarker.getPosition().latitude, androidMarker.getPosition().longitude);
 
 
 
 
+            } else { // code if connected
+
+                if (!internetLoop)
+                    internetLoop = true;
 
 
+                if (ShowDirections && androidMarker.getPosition() != oldLocation)
+                    new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
+
+                else if (!ShowDirections && currentPolyline != null)
+                    currentPolyline.remove();
 
 
+                oldLocation = new LatLng(androidMarker.getPosition().latitude, androidMarker.getPosition().longitude);
 
 
-    Runnable updateMarker = new Runnable() {
+            }
+        }
+    };
+
+
+    // Handler to update the address from the reverse geocoding
+    Handler updateGeocoder = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            if (msg.what != 1) { // code if not connected to the internet
+
+                Toast.makeText(MapActivity.this, "No internet available", Toast.LENGTH_SHORT).show();
+
+
+            } else { // code if connected to the internet
+
+                try {
+                    Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
+                    //Code for Reverse Geocoding (tranforms latitude and longitude coordiantes into street address)
+                    List<Address> listAddresses = geocoder.getFromLocation(Latitude, Longitude, 1);
+
+                    if (listAddresses != null && listAddresses.size() > 0) {
+                        // log returning the whole address (index is zero because we want only one address)
+                        Log.i("PlaceInfo", listAddresses.get(0).toString());
+
+                        String address = "";
+
+
+                        if (listAddresses.get(0).getSubThoroughfare() != null) {
+                            //returns the street number of the address
+                            address += listAddresses.get(0).getSubThoroughfare() + " ";
+
+                        }
+
+
+                        if (listAddresses.get(0).getThoroughfare() != null) {
+                            //returns the thoroughfare name of the address
+                            address += listAddresses.get(0).getThoroughfare() + ", ";
+
+                        }
+
+                        if (listAddresses.get(0).getLocality() != null) {
+                            //returns the locality of the address
+                            address += listAddresses.get(0).getLocality() + ", ";
+
+                        }
+
+                        if (listAddresses.get(0).getPostalCode() != null) {
+                            //returns the postal code
+                            address += listAddresses.get(0).getPostalCode() + ", ";
+
+                        }
+
+                        if (listAddresses.get(0).getCountryName() != null) {
+                            //returns the country name
+                            address += listAddresses.get(0).getCountryName() + " ";
+
+                            //parameters of method getDistance can be obviously improved
+
+                            DecimalFormat df = new DecimalFormat("0.####");
+
+                            address += df.format(getDistance(androidMarker.getPosition(), trackerMarker.getPosition())) + " km away";
+
+                            //androidMarker.setRotation(getBearing(new LatLng(AndroidLocationService.getLastKnownLocation(getApplicationContext()).getLatitude(),AndroidLocationService.getLastKnownLocation(getApplicationContext()).getLongitude()) ,oldLocation));
+
+
+                            //androidMarker.setRotation(AndroidLocationService.getLastKnownLocation(getApplicationContext()).getBearing());
+
+
+                            //getBearing(new LatLng(AndroidLocationService.getLastKnownLocation(getApplicationContext()).getLatitude(),AndroidLocationService.getLastKnownLocation(getApplicationContext()).getLongitude()) ,oldLocation);
+
+
+                           // if(oldLocation != null)
+                            //address += "speed : "+AndroidLocationService.getLastKnownLocation(getApplicationContext()).getSpeed()+" Bearing: "+AndroidLocationService.getLastKnownLocation(getApplicationContext()).getBearing();
+
+
+                        }
+
+                        // if(OldLatitude !=0 && OldLongitude !=0)
+                        {   //returns the speed of the address in #.00 format
+                            //  address += numberFormat.format(speed)+" Km/h";
+
+
+                            //  address += " Latitude"+ NewLatitude +" Longitude"+NewLongitude;
+                        }
+
+                        Toast.makeText(MapActivity.this, address, Toast.LENGTH_SHORT).show();
+
+                    }
+
+                } catch (
+                        IOException e) {
+
+                    e.printStackTrace();
+
+                }
+
+
+            }
+        }
+    };
+
+
+    Runnable updateDirections = new Runnable() {
         @Override
         public void run() {
 
 
+            isNetworkAvailable(fetchDirections, 2000);
+
+
+
+/*
 
             if(ShowDirections && androidMarker.getPosition() != oldLocation)
             new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
@@ -154,11 +305,10 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+*/
 
 
-
-
-            handler.postDelayed(this, MARKER_UPDATE_INTERVAL);
+            handler.postDelayed(this, DIRECTIONS_UPDATE_INTERVAL);
         }
     };
 
@@ -169,27 +319,15 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
             //place1.setPosition(new LatLng(22,78));
             //place1 = map.addMarker(new MarkerOptions().position(location));
 
-            androidMarker.setRotation((float)azimuth+(float)180);
-
-
-
-
-
+            //if(AndroidLocationService.getLastKnownLocation(getApplicationContext()).getSpeed() !=0.0)
+           //
+            //
+             androidMarker.setRotation((float) azimuth /*+ (float) 180*/);
 
 
             handler.postDelayed(this, ANGLE_UPDATE_INTERVAL);
         }
     };
-
-
-
-
-
-
-
-
-
-
 
 
     @Override
@@ -200,13 +338,6 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-
-
-
-
-
-
-
 
 
         gpsReadingBroadcastReceiver = new GPSReadingBroadcastReceiver();
@@ -230,8 +361,40 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+        //locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 4000, 0, (LocationListener) listener);
+        //locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 4000, 0, listener);
 
-        handler.postDelayed(updateMarker, MARKER_UPDATE_INTERVAL);
+
+
+
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, locationListener);
+
+
+
+
+
+
+
+
+
+
+
+
+        handler.postDelayed(updateDirections, DIRECTIONS_UPDATE_INTERVAL);
+
+        //isNetworkAvailable(updateMarker,2000);
 
         handler.postDelayed(updateAngle, ANGLE_UPDATE_INTERVAL);
 
@@ -311,7 +474,7 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
         else if((tracker.TrackerIcon).equals("ic_tracker_2"))
 
-            trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.pets));
+            trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.animalmarker));
 
         else if((tracker.TrackerIcon).equals("ic_tracker_3"))
             trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.item));
@@ -349,83 +512,10 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
                // if(reverseGeocoding.NewLatitude != 0 && reverseGeocoding.NewLongitude != 0)
                 //reverseGeocoding.getAddress(MapActivity.this);
 
-                    try {
-                        Geocoder geocoder = new Geocoder(MapActivity.this, Locale.getDefault());
-                        //Code for Reverse Geocoding (tranforms latitude and longitude coordiantes into street address)
-                        List<Address> listAddresses = geocoder.getFromLocation(Latitude,Longitude, 1);
-
-                        if(listAddresses != null && listAddresses.size() >0){
-                            // log returning the whole address (index is zero because we want only one address)
-                            Log.i("PlaceInfo", listAddresses.get(0).toString());
-
-                            String address = "";
+                isNetworkAvailable(updateGeocoder,2000);
 
 
 
-
-
-
-
-                            if (listAddresses.get(0).getSubThoroughfare() != null) {
-                                //returns the street number of the address
-                                address += listAddresses.get(0).getSubThoroughfare() + " ";
-
-                            }
-
-
-
-                            if (listAddresses.get(0).getThoroughfare() != null) {
-                                //returns the thoroughfare name of the address
-                                address += listAddresses.get(0).getThoroughfare() + ", ";
-
-                            }
-
-                            if (listAddresses.get(0).getLocality() != null) {
-                                //returns the locality of the address
-                                address += listAddresses.get(0).getLocality() + ", ";
-
-                            }
-
-                            if (listAddresses.get(0).getPostalCode() != null) {
-                                //returns the postal code
-                                address += listAddresses.get(0).getPostalCode() + ", ";
-
-                            }
-
-                            if (listAddresses.get(0).getCountryName() != null) {
-                                //returns the country name
-                                address += listAddresses.get(0).getCountryName()+" ";
-
-                                //parameters of method getDistance can be obviously improved
-
-                                DecimalFormat df = new DecimalFormat("0.####");
-
-                                address += df.format(getDistance(androidMarker.getPosition(),trackerMarker.getPosition()))+" km away";
-
-
-
-
-
-                            }
-
-              // if(OldLatitude !=0 && OldLongitude !=0)
-                {   //returns the speed of the address in #.00 format
-                  //  address += numberFormat.format(speed)+" Km/h";
-
-
-                  //  address += " Latitude"+ NewLatitude +" Longitude"+NewLongitude;
-                }
-
-                            Toast.makeText(MapActivity.this, address, Toast.LENGTH_SHORT).show();
-
-                        }
-
-                    } catch (
-                            IOException e) {
-
-                        e.printStackTrace();
-
-                    }
 
 
 
@@ -454,6 +544,10 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
         buttonShowDirections.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(!internetLoop)
+                    Toast.makeText(MapActivity.this, "No internet available", Toast.LENGTH_SHORT).show();
+
 
 
 
@@ -505,7 +599,6 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-//ReverseGeocoding reverseGeocoding = new ReverseGeocoding(MapActivity.this,trackerMarker);
 
 
 
@@ -541,13 +634,6 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
                 Double Longitude = intent.getDoubleExtra("Longitude", 0.0);
 
 
-                //Log.i("ppoosition", Double.toString(Latitude));
-
-
-
-
-               //To change or remove after we get speed from gsm
-               //reverseGeocoding.UpdateGeocoder( Latitude,  Longitude);
 
 
 
@@ -562,16 +648,6 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
                 if (trackerMarker != null)
                     trackerMarker.setPosition(new LatLng(Latitude, Longitude));
 
-
-
-
-
-
-
-                if(trackerMarker != null && ShowDirections)
-                new FetchURL(MapActivity.this).execute(getUrl(androidMarker.getPosition(), trackerMarker.getPosition(), "driving"), "driving");
-                else if (!ShowDirections && currentPolyline != null)
-                currentPolyline.remove();
 
 
 
@@ -620,6 +696,8 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
                 if(androidMarker != null) {
                     androidMarker.setPosition(new LatLng(androidLatestLocation.getLatitude(), androidLatestLocation.getLongitude()));
 
+                   // Toast.makeText(MapActivity.this, "update address", Toast.LENGTH_SHORT).show();
+
 
 
                 }
@@ -650,7 +728,7 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-
+//Function to fetch the Url of the route directions
     private String getUrl(LatLng origin, LatLng dest, String directionMode) {
         // Origin of route
         String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
@@ -681,7 +759,7 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
-
+//Funciton to get distance between two LatLngs
     private static double getDistance(LatLng latLngA,LatLng latLngB) {
 
 
@@ -699,16 +777,51 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+
+
+
+
+    }
+
+
+
+    private static float getBearing(LatLng latLngA,LatLng latLngB) {
+
+
+
+        Location locationA = new Location("point A");
+        locationA.setLatitude(latLngA.latitude);
+        locationA.setLongitude(latLngA.longitude);
+        Location locationB = new Location("point B");
+        locationB.setLatitude(latLngB.latitude);
+        locationB.setLongitude(latLngB.longitude);
+
+        float bearing = locationA.bearingTo(locationB);
+
+        return bearing;
+
+
+
+
     }
 
 
 
 
+   /* public void onLocationChanged(Location location) {
+
+        Androidlocation = location;
+
+    }*/
 
 
 
 
 
+
+
+
+//Function to read the sensors
 
     public void onSensorChanged(SensorEvent event ) {
         // onSensorChanged gets called for each sensor so we have to remember the values
@@ -736,10 +849,59 @@ public  class MapActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    //Function to register change in the accuracy of the sensors
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
     }
+
+
+
+
+//Function to determine if the network is available
+    public static void isNetworkAvailable(final Handler handler, final int timeout) {
+        // ask fo message '0' (not connected) or '1' (connected) on 'handler'
+        // the answer must be send before before within the 'timeout' (in milliseconds)
+
+        new Thread() {
+            private boolean responded = false;
+            @Override
+            public void run() {
+                // set 'responded' to TRUE if is able to connect with google mobile (responds fast)
+                new Thread() {
+                    @Override
+                    public void run() {
+                        HttpGet requestForTest = new HttpGet("http://m.google.com");
+                        try {
+                            new DefaultHttpClient().execute(requestForTest); // can last...
+                            responded = true;
+                        }
+                        catch (Exception e) {
+                        }
+                    }
+                }.start();
+
+                try {
+                    int waited = 0;
+                    while(!responded && (waited < timeout)) {
+                        sleep(100);
+                        if(!responded ) {
+                            waited += 100;
+                        }
+                    }
+                }
+                catch(InterruptedException e) {} // do nothing
+                finally {
+                    if (!responded) { handler.sendEmptyMessage(0); }
+                    else { handler.sendEmptyMessage(1); }
+                }
+            }
+        }.start();
+    }
+
+
+
+
 
 
 
