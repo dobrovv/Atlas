@@ -443,6 +443,7 @@ Context context;
                         .position(androidLatLng)
                         .title("Android")
                         .snippet("Your location"));
+                //Tracker tracker(0, "android", "", String iconNum,Double allowedDistance, String trackerType, Integer enableNotification);
                 trySetMarkerIcon(androidMarker, R.mipmap.ic_launcher_round);
                         //.icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_launcher_round)));
                 miniMap.moveCamera(CameraUpdateFactory.newLatLngZoom(androidLatLng, 15));
@@ -476,7 +477,7 @@ Context context;
             try {
                 LatLng trackerLatLng = new LatLng(gpsReading.Latitude, gpsReading.Longitude);
                 // get image id for the tracker's icon
-                int trackerImageID = getResources().getIdentifier(tracker.TrackerIcon + "_round", "mipmap", getPackageName());
+                int trackerImageID = getResources().getIdentifier(tracker.TrackerIcon + "_foreground", "mipmap", getPackageName());
 
                 // if minimap doesn't contain a marker for the tracker, create it here
                 if (!trackerMarkers.containsKey(tracker.TrackerID)) {
@@ -486,7 +487,7 @@ Context context;
                             .title(String.valueOf(tracker.TrackerName))
                             .snippet("Distance: ??"));
                             //.icon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher)));
-                    trySetMarkerIcon(trackerMarker, trackerImageID);
+                    trySetMarkerIcon(trackerMarker, trackerImageID, tracker);
                     // set the marker in the trackerMarkers hashmap
                     trackerMarkers.put(tracker.TrackerID, trackerMarker);
 
@@ -496,7 +497,7 @@ Context context;
                     trackerMarker.setTitle(String.valueOf(tracker.TrackerName));
                     // TODO: updating markers icon here (?) (currently no way of knowing if the user changed the icon)
                     //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher));
-                    trySetMarkerIcon(trackerMarker, trackerImageID);
+                    trySetMarkerIcon(trackerMarker, trackerImageID, tracker);
                 }
             } catch (Exception ex) {
                 Log.e(TAG, "updateAllMiniMapMarkers() can't update trackers location Exception: " + ex.getMessage());
@@ -560,6 +561,202 @@ Context context;
             Log.e(TAG, "updateTrackerMiniMapMarker() can't update trackers location Exception: " + ex.getMessage());
         }
     }
+
+    void trySetMarkerIcon(Marker marker, int iconId, Tracker tracker) {
+        try{
+            //marker.setIcon(BitmapDescriptorFactory.fromResource((iconId != 0) ? iconId : R.mipmap.ic_launcher));
+            Bitmap trackerBitmapIcon = Tracker.getBitmapFromID(getApplicationContext(), iconId);
+
+            if(tracker.TrackerIconNum != null) {
+
+
+
+                if((tracker.TrackerIcon).equals("ic_tracker_1")) {
+
+
+                    if ((tracker.TrackerIconNum).equals("girl1")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("boy1")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy1);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("boy2")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy2);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("boy3")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy3);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("boy4")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy4);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("girl2")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl2);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("girl3")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl3);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("girl4")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl4);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("girl5")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl5);
+
+
+                    } else /*if ((tracker.TrackerIconNum).equals("boy0"))*/ {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy0);
+
+
+                    }
+
+                }
+
+
+                else if((tracker.TrackerIcon).equals("ic_tracker_2")) {
+
+
+                 if ((tracker.TrackerIconNum).equals("pet1")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet1);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("pet2")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet2);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("pet3")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet3);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("pet4")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet4);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("pet5")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet5);
+
+
+                    } else /*if ((tracker.TrackerIconNum).equals("pet0"))*/ {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet0);
+
+
+                    }
+
+                }
+
+
+
+                else if((tracker.TrackerIcon).equals("ic_tracker_3")) {
+
+
+                 if ((tracker.TrackerIconNum).equals("item1")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.item1);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("item2")) {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.item2);
+
+
+                    }  else /*((tracker.TrackerIconNum).equals("item0"))*/ {
+
+
+                        trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.item0);
+
+
+                    }
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+               // else
+                 //   trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy0);
+
+
+
+
+
+
+
+
+
+
+
+
+            trackerBitmapIcon = Bitmap.createScaledBitmap(trackerBitmapIcon, 125, 125, false);
+            marker.setIcon(BitmapDescriptorFactory.fromBitmap(trackerBitmapIcon));
+        } catch (Exception ex) {
+            Log.e(TAG, "trySetMarkerIcon() can't set icon to tracker's marker Exception: " + ex.getMessage());
+        }
+    }
+
+
+
+
+
+
 
     void trySetMarkerIcon(Marker marker, int iconId) {
         try{
@@ -687,3 +884,7 @@ Context context;
     }
 
 }
+
+
+
+

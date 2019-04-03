@@ -208,130 +208,260 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                 itemViewHolder.trackerImageView.setImageResource(resID);
 
 
-                if((tracker.TrackerIconNum).equals("girl1")) {
+                 if((tracker.TrackerIcon).equals("ic_tracker_1")) {
+                     if ((tracker.TrackerIconNum).equals("girl1")) {
 
 
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
 
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl1);
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.girl1);
 
 
-                    //imageview1.setImageBitmap(bitmap);
+                         //imageview1.setImageBitmap(bitmap);
 
+
+                     } else if ((tracker.TrackerIconNum).equals("boy1")) {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.boy1);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     } else if ((tracker.TrackerIconNum).equals("boy2")) {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.boy2);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     } else if ((tracker.TrackerIconNum).equals("boy3")) {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.boy3);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     } else if ((tracker.TrackerIconNum).equals("boy4")) {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.boy4);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     } else if ((tracker.TrackerIconNum).equals("girl2")) {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.girl2);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     } else if ((tracker.TrackerIconNum).equals("girl3")) {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.girl3);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     } else if ((tracker.TrackerIconNum).equals("girl4")) {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.girl4);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     } else if ((tracker.TrackerIconNum).equals("girl5")) {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.girl5);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     } else /*if ((tracker.TrackerIconNum).equals("boy0"))*/ {
+
+
+                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                         itemViewHolder.trackerImageView.setImageResource(R.drawable.boy0);
+
+
+                         //imageview1.setImageBitmap(bitmap);
+
+
+                     }
+
+                 }
+
+
+
+
+
+
+                else if((tracker.TrackerIcon).equals("ic_tracker_2")) {
+                    if ((tracker.TrackerIconNum).equals("pet1")) {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.pet1);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("pet2")) {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.pet2);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("pet3")) {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.pet3);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("pet4")) {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.pet4);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("pet5")) {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.pet5);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    } else /*if ((tracker.TrackerIconNum).equals("pet0"))*/ {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.pet0);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    }
+                }
+
+
+
+
+
+               else if((tracker.TrackerIcon).equals("ic_tracker_3")) {
+                    if ((tracker.TrackerIconNum).equals("item1")) {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.item1);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("item2")) {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.item2);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    } else if ((tracker.TrackerIconNum).equals("item0")) {
+
+
+                        //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                        itemViewHolder.trackerImageView.setImageResource(R.drawable.item0);
+
+
+                        //imageview1.setImageBitmap(bitmap);
+
+
+                    }
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("boy1")) {
 
 
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
-
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.boy1);
 
 
-                    //imageview1.setImageBitmap(bitmap);
 
-
-                }
-
-                else if((tracker.TrackerIconNum).equals("boy2")) {
-
-
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
-
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.boy2);
-
-
-                    //imageview1.setImageBitmap(bitmap);
-
-
-                }
-
-                else if((tracker.TrackerIconNum).equals("boy3")) {
-
-
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
-
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.boy3);
-
-
-                    //imageview1.setImageBitmap(bitmap);
-
-
-                }
-
-
-                else if((tracker.TrackerIconNum).equals("boy4")) {
-
-
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
-
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.boy4);
-
-
-                    //imageview1.setImageBitmap(bitmap);
-
-
-                }
-
-
-                else if((tracker.TrackerIconNum).equals("girl2")) {
-
-
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
-
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl2);
-
-
-                    //imageview1.setImageBitmap(bitmap);
-
-
+                else {
+                    //int resID = context.getResources().getIdentifier(tracker.TrackerIcon, "mipmap", context.getPackageName());
+                    itemViewHolder.trackerImageView.setImageResource(resID);
                 }
 
 
 
-                else if((tracker.TrackerIconNum).equals("girl3")) {
-
-
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
-
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl3);
-
-
-                    //imageview1.setImageBitmap(bitmap);
-
-
-                }
 
 
 
-                else if((tracker.TrackerIconNum).equals("girl4")) {
-
-
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
-
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl4);
-
-
-                    //imageview1.setImageBitmap(bitmap);
-
-
-                }
 
 
 
-                else if((tracker.TrackerIconNum).equals("girl5")) {
 
 
-                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
-
-                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl5);
 
 
-                    //imageview1.setImageBitmap(bitmap);
-
-
-                }
 
 
 

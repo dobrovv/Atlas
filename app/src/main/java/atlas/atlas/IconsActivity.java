@@ -19,6 +19,7 @@ public class IconsActivity extends AppCompatActivity {
     private ImageButton girl3Button;
     private ImageButton girl4Button;
     private ImageButton girl5Button;
+    private ImageButton boy5Button;
     //private ImageButton boy4Button;
     String TrackerID;
     DatabaseHelper dbh;
@@ -65,6 +66,7 @@ public class IconsActivity extends AppCompatActivity {
         girl3Button = findViewById(R.id.imageButton7);
         girl4Button = findViewById(R.id.imageButton8);
         girl5Button = findViewById(R.id.imageButton9);
+        boy5Button = findViewById(R.id.imageButton10);
         //imageview2 = (ImageButton) findViewById(R.id.imageView2);
         //imageview3 = (ImageButton) findViewById(R.id.imageView3);
 
@@ -389,6 +391,43 @@ public class IconsActivity extends AppCompatActivity {
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl5";
+
+                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+
+
+
+                dbh.updateTracker(tracker);
+
+                Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
+
+
+                myIntent.putExtra("TrackerID", TrackerID);
+
+                IconsActivity.this.startActivity(myIntent);
+
+                return true;
+
+
+
+
+            }
+        });
+
+
+        boy5Button.setOnLongClickListener(new View.OnLongClickListener()
+        {
+
+            @Override
+            public boolean onLongClick(View v)
+            {
+
+
+
+
+                Tracker tracker = dbh.getTrackerByID(TrackerID);
+
+                //WHy this doens't not change???
+                tracker.TrackerIconNum = "boy0";
 
                 Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 

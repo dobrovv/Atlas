@@ -15,6 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".IconsActivity"  android:label="Children Icons"></activity>
+        <activity android:name=".IconsPetsActivity"  android:label="Pets Icons"></activity>
+        <activity android:name=".IconsItemsActivity"  android:label="Items Icons"></activity>
         <activity
             android:name=".trackerActivity"
             android:label="Tracker Activity"
