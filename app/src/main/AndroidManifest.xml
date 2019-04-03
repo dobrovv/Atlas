@@ -14,6 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".IconsActivity"  android:label="Children Icons"></activity>
         <activity
             android:name=".trackerActivity"
             android:label="Tracker Activity"

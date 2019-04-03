@@ -52,7 +52,7 @@ public class AddTrackerDialog extends DialogFragment {
                 DatabaseHelper dbh = new DatabaseHelper(getContext());
 
                 // add new Tracker to the database and go to the trackerActivity
-                if (dbh.addNewTracker(new Tracker(TrackerID, "", "", 300.0, "", 1))) {
+                if (dbh.addNewTracker(new Tracker(TrackerID, "", "", "",300.0, "", 1))) {
                     Intent intent = new Intent(getActivity(), trackerActivity.class);
                     // add TrackerID to the intent send to the trackerActivity
                     intent.putExtra("TrackerID", TrackerID);

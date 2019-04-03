@@ -23,7 +23,7 @@
         android:layout_marginBottom="5dp"
         android:background="#359c5e"
         android:padding="8dp"
-        android:text="Speed and position"
+        android:text="ADDRESS"
         android:textColor="#ffffff" />
 
 

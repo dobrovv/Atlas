@@ -3,6 +3,8 @@ package atlas.atlas;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 
@@ -75,6 +77,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
     Marker trackerMarker;
     Circle allowedDistanceCircle;
+
+
+    Tracker tracker;
 
 
     GPSReadingBroadcastReceiver gpsReadingBroadcastReceiver;
@@ -234,6 +239,15 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                             DecimalFormat df = new DecimalFormat("0.####");
 
                             address += df.format(getDistance(androidMarker.getPosition(), trackerMarker.getPosition())) + " km away";
+
+                            //DatabaseHelper dbh = new DatabaseHelper(this);\
+                            //address+= "Number "+tracker.TrackerIconNum;
+
+                           // TrackerID;
+
+                            address+= "Number "+tracker.TrackerIconNum;
+
+
 
                             //androidMarker.setRotation(getBearing(new LatLng(AndroidLocationService.getLastKnownLocation(getApplicationContext()).getLatitude(),AndroidLocationService.getLastKnownLocation(getApplicationContext()).getLongitude()) ,oldLocation));
 
@@ -447,7 +461,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         //Before code modification, This was just before the code to set the icons
         DatabaseHelper dbh = new DatabaseHelper(this);
-        Tracker tracker = dbh.getTrackerByID(TrackerID);
+         tracker = dbh.getTrackerByID(TrackerID);
 
         // Add a marker in Sydney and move the camera
         LatLng androidLoc = new LatLng(AndroidLatitude, AndroidLongitude);
@@ -468,8 +482,53 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
         //Set the icon of the marker depending on it's type (depending on image selected in tacker activity)
-        if((tracker.TrackerIcon).equals("ic_tracker_1"))
-            trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.child));
+        if((tracker.TrackerIcon).equals("ic_tracker_1")) {
+
+
+            Bitmap  trackerBitmapIcon;// = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy1);
+
+            if(tracker.TrackerIconNum.equals("girl1"))
+            //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.girl1));
+            //Bitmap image = BitmapDescriptorFactory.fromResource(R.drawable.girl1);
+            trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+            else if(tracker.TrackerIconNum.equals("boy1"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy1));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy1);
+            else if(tracker.TrackerIconNum.equals("boy2"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy2));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy2);
+            else if(tracker.TrackerIconNum.equals("boy3"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy3));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy3);
+            else if(tracker.TrackerIconNum.equals("boy4"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy4));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy4);
+            else if(tracker.TrackerIconNum.equals("girl2"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.girl2));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl2);
+            else if(tracker.TrackerIconNum.equals("girl3"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.girl3));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl3);
+            else if(tracker.TrackerIconNum.equals("girl4"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.girl4));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl4);
+            else if(tracker.TrackerIconNum.equals("girl5"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.girl5));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl5);
+            else
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.child));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.child);
+
+            trackerBitmapIcon = Bitmap.createScaledBitmap(trackerBitmapIcon, 125, 125, false);
+
+            trackerMarker.setIcon(BitmapDescriptorFactory.fromBitmap(trackerBitmapIcon));
+
+
+
+
+
+        }
 
 
         else if((tracker.TrackerIcon).equals("ic_tracker_2"))

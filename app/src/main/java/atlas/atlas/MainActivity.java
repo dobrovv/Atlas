@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -564,6 +565,120 @@ Context context;
         try{
             //marker.setIcon(BitmapDescriptorFactory.fromResource((iconId != 0) ? iconId : R.mipmap.ic_launcher));
             Bitmap trackerBitmapIcon = Tracker.getBitmapFromID(getApplicationContext(), iconId);
+/*
+            if(Tracker.TrackerIconNum != null)
+                if((Tracker.TrackerIconNum).equals("girl1")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+
+
+
+                }
+
+                else if((Tracker.TrackerIconNum).equals("boy1")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy1);
+
+
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy2")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy2);
+
+
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy3")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy3);
+
+
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy4")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy4);
+
+
+
+
+                }
+
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl2")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl2);
+
+
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl3")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl3);
+
+
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl4")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl4);
+
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl5")) {
+
+
+                     trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl5);
+
+
+
+
+                }
+
+                else
+                     trackerBitmapIcon = Tracker.getBitmapFromID(getApplicationContext(), iconId);
+
+*/
+
+
+
+
+
+
+
+
+
+
             trackerBitmapIcon = Bitmap.createScaledBitmap(trackerBitmapIcon, 125, 125, false);
             marker.setIcon(BitmapDescriptorFactory.fromBitmap(trackerBitmapIcon));
         } catch (Exception ex) {
