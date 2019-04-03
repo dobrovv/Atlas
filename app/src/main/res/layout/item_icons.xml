@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/imageButton1A"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton1"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/item1" />
+
+
+                    <ImageButton
+                        android:id="@+id/imageButton18B"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/imageButton2A"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton2"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/item2" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton2B"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/imageButton3A"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"/>
+
+                    <ImageButton
+                        android:id="@+id/imageButton3"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp"
+                        android:scaleType="fitXY"
+                        app:srcCompat="@drawable/item0" />
+
+                    <ImageButton
+                        android:id="@+id/imageButton3B"
+                        android:layout_width="150dp"
+                        android:layout_height="150dp" />
+                </TableRow>
+
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

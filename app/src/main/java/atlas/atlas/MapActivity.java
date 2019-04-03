@@ -518,7 +518,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl5);
             else
                 //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.child));
-                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.child);
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy0);
 
             trackerBitmapIcon = Bitmap.createScaledBitmap(trackerBitmapIcon, 125, 125, false);
 
@@ -526,14 +526,87 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
 
+        }
+
+
+        else if((tracker.TrackerIcon).equals("ic_tracker_2")) {
+
+
+            Bitmap  trackerBitmapIcon;// = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy1);
+
+            if(tracker.TrackerIconNum.equals("pet1"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.girl1));
+                //Bitmap image = BitmapDescriptorFactory.fromResource(R.drawable.girl1);
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet1);
+
+            else if(tracker.TrackerIconNum.equals("pet2"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy1));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet2);
+            else if(tracker.TrackerIconNum.equals("pet3"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy2));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet3);
+            else if(tracker.TrackerIconNum.equals("pet4"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy3));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet4);
+            else if(tracker.TrackerIconNum.equals("pet5"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy4));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet5);
+            else if(tracker.TrackerIconNum.equals("pet0"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.girl2));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet0);
+            else
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.child));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet0);
+
+            trackerBitmapIcon = Bitmap.createScaledBitmap(trackerBitmapIcon, 125, 125, false);
+
+            trackerMarker.setIcon(BitmapDescriptorFactory.fromBitmap(trackerBitmapIcon));
+
 
 
         }
 
 
-        else if((tracker.TrackerIcon).equals("ic_tracker_2"))
 
-            trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.animalmarker));
+
+
+        else if((tracker.TrackerIcon).equals("ic_tracker_3")) {
+
+
+            Bitmap  trackerBitmapIcon;// = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy1);
+
+            if(tracker.TrackerIconNum.equals("item1"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.girl1));
+                //Bitmap image = BitmapDescriptorFactory.fromResource(R.drawable.girl1);
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.item1);
+
+            else if(tracker.TrackerIconNum.equals("item2"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy1));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.item2);
+            else if(tracker.TrackerIconNum.equals("item0"))
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.boy2));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.item0);
+            else
+                //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.child));
+                trackerBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.item0);
+
+            trackerBitmapIcon = Bitmap.createScaledBitmap(trackerBitmapIcon, 125, 125, false);
+
+            trackerMarker.setIcon(BitmapDescriptorFactory.fromBitmap(trackerBitmapIcon));
+
+
+
+        }
+
+
+
+
+
+
+
+
+
+        // trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.animalmarker));
 
         else if((tracker.TrackerIcon).equals("ic_tracker_3"))
             trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.item));

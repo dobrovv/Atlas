@@ -238,6 +238,134 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
+                else {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy0);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+            imageview2  = (ImageButton) findViewById(R.id.imageView2);
+            if(tracker.TrackerIconNum != null)
+                if((tracker.TrackerIconNum).equals("pet1")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet1);
+
+
+                    imageview2.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("pet2")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet2);
+
+
+                    imageview2.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("pet3")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet3);
+
+
+                    imageview2.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("pet4")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet4);
+
+
+                    imageview2.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("pet5")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet5);
+
+
+                    imageview2.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+
+                else if((tracker.TrackerIconNum).equals("pet0")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet0);
+
+
+                    imageview2.setImageBitmap(bitmap);
+                }
+
+
+
+
+
+
+            imageview3  = (ImageButton) findViewById(R.id.imageView3);
+            if(tracker.TrackerIconNum != null)
+                if((tracker.TrackerIconNum).equals("item1")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.item1);
+
+
+                    imageview3.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("item2")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.item2);
+
+
+                    imageview3.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+
+
+
+                else if((tracker.TrackerIconNum).equals("item0")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.item0);
+
+
+                    imageview3.setImageBitmap(bitmap);
+                }
+
+
+
+
 
 
 
@@ -334,6 +462,15 @@ public class trackerActivity extends AppCompatActivity {
             public boolean onLongClick(View v)
             {
 
+                setSelectedImage(R.mipmap.ic_tracker_1);
+
+                DatabaseHelper dbh = new DatabaseHelper(trackerActivity.this);
+                Tracker tracker = dbh.getTrackerByID(TrackerID);
+
+                tracker.TrackerIcon = getResources().getResourceEntryName(selectedImageID);
+
+                dbh.updateTracker(tracker);
+
                 Intent myIntent = new Intent(trackerActivity.this, IconsActivity.class);
 
                 myIntent.putExtra("TrackerID", TrackerID);
@@ -359,6 +496,47 @@ public class trackerActivity extends AppCompatActivity {
             }
         });
 
+
+
+
+
+        imageview2.setOnLongClickListener(new View.OnLongClickListener()
+        {
+
+            @Override
+            public boolean onLongClick(View v)
+            {
+
+                setSelectedImage(R.mipmap.ic_tracker_2);
+
+                DatabaseHelper dbh = new DatabaseHelper(trackerActivity.this);
+                Tracker tracker = dbh.getTrackerByID(TrackerID);
+
+                tracker.TrackerIcon = getResources().getResourceEntryName(selectedImageID);
+
+                dbh.updateTracker(tracker);
+
+                Intent myIntent = new Intent(trackerActivity.this, IconsPetsActivity.class);
+
+                myIntent.putExtra("TrackerID", TrackerID);
+
+                trackerActivity.this.startActivity(myIntent);
+
+                return true;
+
+
+
+
+            }
+        });
+
+
+
+
+
+
+
+
         imageview3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -368,6 +546,66 @@ public class trackerActivity extends AppCompatActivity {
                 //imageview3.setBackgroundResource(R.drawable.add_icon);
             }
         });
+
+
+        imageview3.setOnLongClickListener(new View.OnLongClickListener()
+        {
+
+            @Override
+            public boolean onLongClick(View v)
+            {
+
+                setSelectedImage(R.mipmap.ic_tracker_3);
+
+                DatabaseHelper dbh = new DatabaseHelper(trackerActivity.this);
+                Tracker tracker = dbh.getTrackerByID(TrackerID);
+
+                tracker.TrackerIcon = getResources().getResourceEntryName(selectedImageID);
+
+
+                dbh.updateTracker(tracker);
+
+                Intent myIntent = new Intent(trackerActivity.this, IconsItemsActivity.class);
+
+                myIntent.putExtra("TrackerID", TrackerID);
+
+                trackerActivity.this.startActivity(myIntent);
+
+                return true;
+
+
+
+
+            }
+        });
+
+
+
+
+     /*   imageview3.setOnLongClickListener(new View.OnLongClickListener()
+        {
+
+            @Override
+            public boolean onLongClick(View v)
+            {
+
+                Intent myIntent = new Intent(trackerActivity.this, IconsPetsActivity.class);
+
+                myIntent.putExtra("TrackerID", TrackerID);
+
+                trackerActivity.this.startActivity(myIntent);
+
+                return true;
+
+
+
+
+            }
+        });*/
+
+
+
+
     }
     @Override
     protected void onResume() {
