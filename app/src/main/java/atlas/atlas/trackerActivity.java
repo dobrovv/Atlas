@@ -3,6 +3,8 @@ package atlas.atlas;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.ArrayList;
 
@@ -60,6 +64,9 @@ public class trackerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracker);
 
+
+
+
         trackerNameEdit = findViewById(R.id.TrackerNameEdit);
 
 
@@ -77,6 +84,8 @@ public class trackerActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         TrackerID = intent.getStringExtra("TrackerID");
+
+        //Tracker tracker = db.get
 
 // layeout used to contain images
         LinearLayout scroller = findViewById(R.id.scroller);
@@ -116,6 +125,126 @@ public class trackerActivity extends AppCompatActivity {
             String TrackerName = tracker.TrackerName;
             Double AllowedDistance = tracker.AllowedDistance;
 
+
+
+
+            imageview1  = (ImageButton) findViewById(R.id.imageView1);
+            if(tracker.TrackerIconNum != null)
+                if((tracker.TrackerIconNum).equals("girl1")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy1")) {
+
+
+                Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy1);
+
+
+                imageview1.setImageBitmap(bitmap);
+
+
+            }
+
+                else if((tracker.TrackerIconNum).equals("boy2")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy2);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy3")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy3);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy4")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy4);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl2")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl2);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl3")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl3);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl4")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl4);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl5")) {
+
+
+                    Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl5);
+
+
+                    imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+
+
+
+
+
             // fill in the views
             trackerNameEdit.setText(String.valueOf(tracker.TrackerName));
             allowedDistanceEdit.setText(String.valueOf(AllowedDistance));
@@ -149,6 +278,8 @@ public class trackerActivity extends AppCompatActivity {
             String TrackerName = String.valueOf(trackerNameEdit.getText());
             Double AllowedDistance = Double.valueOf(allowedDistanceEdit.getText().toString());
             // save data to db
+            Toast.makeText(trackerActivity.this, tracker.TrackerIconNum, Toast.LENGTH_SHORT).show();
+
             tracker.TrackerName = TrackerName;
             tracker.AllowedDistance = AllowedDistance;
             tracker.TrackerIcon = getResources().getResourceEntryName(selectedImageID);
@@ -194,6 +325,32 @@ public class trackerActivity extends AppCompatActivity {
 
             }
         });
+
+
+        imageview1.setOnLongClickListener(new View.OnLongClickListener()
+        {
+
+            @Override
+            public boolean onLongClick(View v)
+            {
+
+                Intent myIntent = new Intent(trackerActivity.this, IconsActivity.class);
+
+                myIntent.putExtra("TrackerID", TrackerID);
+
+                trackerActivity.this.startActivity(myIntent);
+
+                return true;
+
+
+
+
+            }
+        });
+
+
+
+
         imageview2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

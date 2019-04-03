@@ -2,6 +2,8 @@ package atlas.atlas;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.provider.ContactsContract;
 import android.support.v7.widget.RecyclerView;
@@ -204,6 +206,138 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
             } else {
                 int resID = context.getResources().getIdentifier(tracker.TrackerIcon, "mipmap", context.getPackageName());
                 itemViewHolder.trackerImageView.setImageResource(resID);
+
+
+                if((tracker.TrackerIconNum).equals("girl1")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl1);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy1")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.boy1);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy2")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.boy2);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+                else if((tracker.TrackerIconNum).equals("boy3")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.boy3);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+                else if((tracker.TrackerIconNum).equals("boy4")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.boy4);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+                else if((tracker.TrackerIconNum).equals("girl2")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl2);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl3")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl3);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl4")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl4);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+                else if((tracker.TrackerIconNum).equals("girl5")) {
+
+
+                    //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
+
+                    itemViewHolder.trackerImageView.setImageResource(R.drawable.girl5);
+
+
+                    //imageview1.setImageBitmap(bitmap);
+
+
+                }
+
+
+
+
+
+
             }
 
             // set timestamp // gpsReading may be null

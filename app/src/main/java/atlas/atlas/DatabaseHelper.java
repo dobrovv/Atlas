@@ -58,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String trackersTable =
-                "CREATE TABLE Trackers(TrackerID CHAR(32) PRIMARY KEY, TrackerName TEXT, TrackerIcon TEXT, AllowedDistance REAL, TrackerType VARCHAR(32), EnableNotification INTEGER);";
+                "CREATE TABLE Trackers(TrackerID CHAR(32) PRIMARY KEY, TrackerName TEXT, TrackerIcon TEXT, TrackerIconNum TEXT, AllowedDistance REAL, TrackerType VARCHAR(32), EnableNotification INTEGER);";
         String gpsReadingsTable =
                 "CREATE TABLE GPSReadings(GPSReadingID INTEGER PRIMARY KEY AUTOINCREMENT, TrackerID VARCHAR(32), androidTimestamp INTEGER, serverTimestamp REAL, Latitude REAL, Longitude REAL, Speed REAL, GSMSignal INTEGER, GPSSignal INTEGER, BatteryLevel INTEGER, PowerStatus INTEGER);";
 
