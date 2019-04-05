@@ -606,10 +606,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
 
 
-        // trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.animalmarker));
 
-        else if((tracker.TrackerIcon).equals("ic_tracker_3"))
-            trackerMarker.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.item));
 
 
 
