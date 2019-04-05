@@ -91,7 +91,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl1";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -128,7 +128,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy1";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+        //        Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -165,7 +165,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy2";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+         //       Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -203,7 +203,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy3";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+        //        Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -241,7 +241,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy4";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+          //      Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -279,7 +279,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl2";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+        //        Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -316,7 +316,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl3";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+       //         Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -354,7 +354,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl4";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+          //      Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -392,7 +392,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl5";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+          //      Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -429,7 +429,7 @@ public class IconsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy0";
 
-                Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+          //      Toast.makeText(IconsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
