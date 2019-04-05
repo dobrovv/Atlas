@@ -83,7 +83,7 @@ public class IconsPetsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet1";
 
-                Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -120,7 +120,7 @@ public class IconsPetsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet2";
 
-                Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -158,7 +158,7 @@ public class IconsPetsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet3";
 
-                Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+             //   Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -197,7 +197,7 @@ public class IconsPetsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet4";
 
-                Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+               // Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -236,7 +236,7 @@ public class IconsPetsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet5";
 
-                Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -275,7 +275,7 @@ public class IconsPetsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet0";
 
-                Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 

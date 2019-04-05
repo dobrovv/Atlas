@@ -236,16 +236,28 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
                             //parameters of method getDistance can be obviously improved
 
-                            DecimalFormat df = new DecimalFormat("0.####");
 
-                            address += df.format(getDistance(androidMarker.getPosition(), trackerMarker.getPosition())) + " km away";
+
+
+                            //if bigger than 1 km
+                            if(getDistance(androidMarker.getPosition(), trackerMarker.getPosition())>1000) {
+                                DecimalFormat df = new DecimalFormat("0.#");
+                                address += df.format(getDistance(androidMarker.getPosition(), trackerMarker.getPosition()) / 1000) + " km away";
+                            }
+                            // else smaller than 1 km
+                            else {
+                                DecimalFormat df = new DecimalFormat("0");
+                                address += df.format(getDistance(androidMarker.getPosition(), trackerMarker.getPosition())) + " m away";
+                            }
+
+
 
                             //DatabaseHelper dbh = new DatabaseHelper(this);\
                             //address+= "Number "+tracker.TrackerIconNum;
 
                            // TrackerID;
 
-                            address+= "Number "+tracker.TrackerIconNum;
+
 
 
 
@@ -900,7 +912,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         locationB.setLatitude(latLngB.latitude);
         locationB.setLongitude(latLngB.longitude);
 
-        double distance = locationA.distanceTo(locationB)/1000;
+        double distance = locationA.distanceTo(locationB);
 
         return distance;
 

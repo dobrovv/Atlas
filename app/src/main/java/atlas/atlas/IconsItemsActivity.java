@@ -77,7 +77,7 @@ public class IconsItemsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "item1";
 
-                Toast.makeText(IconsItemsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(IconsItemsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -114,7 +114,7 @@ public class IconsItemsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "item2";
 
-                Toast.makeText(IconsItemsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+           //     Toast.makeText(IconsItemsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
@@ -152,7 +152,7 @@ public class IconsItemsActivity extends AppCompatActivity {
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "item0";
 
-                Toast.makeText(IconsItemsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+           //     Toast.makeText(IconsItemsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 

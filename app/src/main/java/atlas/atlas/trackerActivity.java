@@ -406,7 +406,6 @@ public class trackerActivity extends AppCompatActivity {
             String TrackerName = String.valueOf(trackerNameEdit.getText());
             Double AllowedDistance = Double.valueOf(allowedDistanceEdit.getText().toString());
             // save data to db
-            Toast.makeText(trackerActivity.this, tracker.TrackerIconNum, Toast.LENGTH_SHORT).show();
 
             tracker.TrackerName = TrackerName;
             tracker.AllowedDistance = AllowedDistance;
