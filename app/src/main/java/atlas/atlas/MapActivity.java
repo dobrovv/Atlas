@@ -42,6 +42,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -351,6 +352,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
              androidMarker.setRotation((float) azimuth /*+ (float) 180*/);
 
 
+
             handler.postDelayed(this, ANGLE_UPDATE_INTERVAL);
         }
     };
@@ -478,8 +480,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         // Add a marker in Sydney and move the camera
         LatLng androidLoc = new LatLng(AndroidLatitude, AndroidLongitude);
         LatLng trackerLoc = new LatLng(Latitude, Longitude);
-        androidMarker = mMap.addMarker(new MarkerOptions().position(androidLoc).title("Your Location"));
+        androidMarker = mMap.addMarker(new MarkerOptions().position(androidLoc).flat(true).title("Your Location"));
+
         trackerMarker = mMap.addMarker(new MarkerOptions().position(trackerLoc).title(tracker.TrackerName));
+
+
+
 
 
 
@@ -1039,6 +1045,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             }
         }.start();
     }
+
+
+
+   /* func mapView(_ mapView: GMSMapView, idleAt position: GMSCameraPosition) {
+        print(position.bearing);
+    }*/
 
 
 
