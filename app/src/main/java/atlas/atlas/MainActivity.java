@@ -495,6 +495,7 @@ Context context;
                     Marker trackerMarker = trackerMarkers.get(tracker.TrackerID);
                     trackerMarker.setPosition(trackerLatLng);
                     trackerMarker.setTitle(String.valueOf(tracker.TrackerName));
+                   // Toast.makeText(MainActivity.this,"Notifi are: "+ tracker.EnableNotification, Toast.LENGTH_SHORT).show();
                     // TODO: updating markers icon here (?) (currently no way of knowing if the user changed the icon)
                     //trackerMarker.setIcon(BitmapDescriptorFactory.fromResource((trackerImageID != 0) ? trackerImageID : R.mipmap.ic_launcher));
                     trySetMarkerIcon(trackerMarker, trackerImageID, tracker);

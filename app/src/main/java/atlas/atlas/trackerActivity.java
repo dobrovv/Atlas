@@ -16,12 +16,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
@@ -39,6 +41,8 @@ public class trackerActivity extends AppCompatActivity {
     private TextView allowedDistanceEdit;
     private Button saveButton;
     private Button cancelButton;
+
+    private ToggleButton toggleButton;
 
     private int selectedImageID = R.mipmap.ic_launcher; // set the default image if no image was previously selected
 
@@ -82,8 +86,25 @@ public class trackerActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.SaveButton);
         cancelButton = findViewById(R.id.CancelButton);
 
+
+        toggleButton = findViewById(R.id.toggleButton);
+
+
+        //toggleclick(View );
+
+
         Intent intent = getIntent();
         TrackerID = intent.getStringExtra("TrackerID");
+
+        DatabaseHelper dbh = new DatabaseHelper(this);
+        Tracker tracker = dbh.getTrackerByID(TrackerID);
+
+        if(tracker.EnableNotification == 1)
+            toggleButton.setChecked(true);
+        else
+            toggleButton.setChecked(false);
+
+
 
         //Tracker tracker = db.get
 
@@ -580,32 +601,43 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
+        toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-     /*   imageview3.setOnLongClickListener(new View.OnLongClickListener()
-        {
+                DatabaseHelper dbh = new DatabaseHelper(trackerActivity.this);
+                Tracker tracker = dbh.getTrackerByID(TrackerID);
+                dbh.updateTracker(tracker);
 
-            @Override
-            public boolean onLongClick(View v)
-            {
+                if (isChecked) {
+                    tracker.EnableNotification = 1;
+                } else {
+                    tracker.EnableNotification = 0;
+                }
 
-                Intent myIntent = new Intent(trackerActivity.this, IconsPetsActivity.class);
-
-                myIntent.putExtra("TrackerID", TrackerID);
-
-                trackerActivity.this.startActivity(myIntent);
-
-                return true;
-
-
-
-
+                dbh.updateTracker(tracker);
             }
-        });*/
+        });
+
+
+
 
 
 
 
     }
+
+
+  /*  public void toggleclick(View v){
+        if(toggleButton.isChecked())
+            Toast.makeText(trackerActivity.this, "ON", Toast.LENGTH_SHORT).show();
+        else
+            Toast.makeText(trackerActivity.this, "OFF", Toast.LENGTH_SHORT).show();
+    }*/
+
+
+
+
+
     @Override
     protected void onResume() {
         super.onResume();
