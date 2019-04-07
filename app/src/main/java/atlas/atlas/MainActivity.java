@@ -47,6 +47,8 @@ import java.util.HashSet;
 //comment 12
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+    //splash team time out
+  //  private static int SPLASH_TIME_OUT = 5;
 
     private static final String TAG = "Atlas"+MainActivity.class.getSimpleName();
 
@@ -235,7 +237,16 @@ Context context;
         trackerListMain.setAdapter(trackerListAdapter);
 
 
-        }
+      /*  new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Intent welcomeIntent = new Intent(MainActivity.this, WelcomeActivity.class);
+                startActivity(welcomeIntent);
+                finish();
+            }
+        },SPLASH_TIME_OUT);*/
+
+    }
     private void setupRecyclerView(){
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.trackerListMain);
 

@@ -14,24 +14,39 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".IconsActivity"  android:label="Children Icons"></activity>
-        <activity android:name=".IconsPetsActivity"  android:label="Pets Icons"></activity>
-        <activity android:name=".IconsItemsActivity"  android:label="Items Icons"></activity>
-        <activity
-            android:name=".trackerActivity"
-            android:label="Tracker Activity"
-            android:parentActivityName=".MainActivity" >
-        <!-- Parent activity meta-data to support 4.0 and lower -->
-        <meta-data
-            android:name="android.support.PARENT_ACTIVITY"
-            android:value=".MainActivity" />
-        </activity>
-
-        <activity android:name=".MainActivity">
+        <activity android:name=".WelcomeActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".IconsActivity"
+            android:label="Children Icons" />
+        <activity
+            android:name=".IconsPetsActivity"
+            android:label="Pets Icons" />
+        <activity
+            android:name=".IconsItemsActivity"
+            android:label="Items Icons" />
+        <activity
+            android:name=".trackerActivity"
+            android:label="Tracker Activity"
+            android:parentActivityName=".MainActivity">
+
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -61,7 +76,7 @@
 
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map"></activity>
+            android:label="@string/title_activity_map" />
     </application>
 
 </manifest>
