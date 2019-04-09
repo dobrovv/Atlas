@@ -464,7 +464,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
 
         if(isFirstMap()){
 
-            Toast.makeText(MapActivity.this, "You might need to do an eight motion with your phone to recalibre the compas", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapActivity.this, "You might need to do an eight motion with your phone to recalibrate the compass", Toast.LENGTH_LONG).show();
 
 
         }
