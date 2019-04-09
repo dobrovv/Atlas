@@ -396,7 +396,8 @@ public class trackerActivity extends AppCompatActivity {
 
             // fill in the views
             trackerNameEdit.setText(String.valueOf(tracker.TrackerName));
-            allowedDistanceEdit.setText(String.valueOf(AllowedDistance));
+
+            allowedDistanceEdit.setText(String.format("%.0f", AllowedDistance));
 
 
 

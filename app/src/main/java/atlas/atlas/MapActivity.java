@@ -31,6 +31,7 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -363,6 +364,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
+        //get parameters from the intent (sent in TrackerListAdapter)
+        Intent intent = getIntent();
+        if (intent != null) {
+            TrackerID = intent.getStringExtra("TrackerID");
+            Latitude = intent.getDoubleExtra("Latitude", 0.0);
+            Longitude = intent.getDoubleExtra("Longitude", 0.0);
+            AndroidLatitude = intent.getDoubleExtra("AndroidLatitude", 0.0);
+            AndroidLongitude = intent.getDoubleExtra("AndroidLongitude", 0.0);
+        }
+
+        // check if the TrackerID is still in the db
+        DatabaseHelper dbh = new DatabaseHelper(this);
+        if(!dbh.hasTrackerID(TrackerID)) {
+            finish();
+            return;
+        }
+
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -425,28 +445,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         //isNetworkAvailable(updateMarker,2000);
 
         handler.postDelayed(updateAngle, ANGLE_UPDATE_INTERVAL);
-
-
-
-
-
-
-
-
-        //get parameters from the intent (sent in TrackerListAdapter)
-        Intent intent = getIntent();
-        if (intent != null) {
-            TrackerID = intent.getStringExtra("TrackerID");
-            Latitude = intent.getDoubleExtra("Latitude", 0.0);
-            Longitude = intent.getDoubleExtra("Longitude", 0.0);
-            AndroidLatitude = intent.getDoubleExtra("AndroidLatitude", 0.0);
-            AndroidLongitude = intent.getDoubleExtra("AndroidLongitude", 0.0);
-        }
-
-
-
-
-
         mSensorManager = (SensorManager)getSystemService(SENSOR_SERVICE);
         accelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
