@@ -47,7 +47,7 @@ import java.util.ArrayList;
 public class DatabaseHelper extends SQLiteOpenHelper {
     private Context context;
     public static final String DATABASE_NAME = "atlas-db";
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     private static final String TAG = "Atlas"+DatabaseHelper.class.getSimpleName();
 
     public DatabaseHelper(Context context) {

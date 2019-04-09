@@ -332,18 +332,19 @@ Context context;
             }
             mBackgroundServicesStarted = !mBackgroundServicesStarted;
         } else if (id==R.id.showMiniMapAction) {
-            mShowMiniMap = (mShowMiniMap+1)%3;
+            mShowMiniMap = (mShowMiniMap+1)%2;
             if (mShowMiniMap == 0) {
                 miniMapView.setVisibility(View.VISIBLE);
-                mapTextView.setVisibility(View.GONE);
+                //mapTextView.setVisibility(View.GONE);
                 miniMapLayout.setVisibility(View.VISIBLE);
             }  else if (mShowMiniMap == 1) {
-                miniMapView.setVisibility(View.GONE);
-                mapTextView.setVisibility(View.VISIBLE);
-                miniMapLayout.setVisibility(View.VISIBLE);
-            } else if (mShowMiniMap == 2) {
                 miniMapLayout.setVisibility(View.GONE);
-            }
+                //miniMapView.setVisibility(View.GONE);
+                //mapTextView.setVisibility(View.VISIBLE);
+                //miniMapLayout.setVisibility(View.VISIBLE);
+            } /*else if (mShowMiniMap == 2) {
+                miniMapLayout.setVisibility(View.GONE);
+            }*/
 
         }
 
