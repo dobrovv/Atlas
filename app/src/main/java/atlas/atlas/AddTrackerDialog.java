@@ -23,10 +23,23 @@ public class AddTrackerDialog extends DialogFragment {
     TextView trackerIDEditValidation;
     Button cancelButton;
     Button saveButton;
+    //boolean firstRun;
+    //MainActivity.firstRun;
+
+    boolean firstRun; //= getArguments().getBoolean("FirstUse");
+
+
+   /*  AddTrackerDialog(boolean firstRun){
+
+        this.firstRun = firstRun;
+    }*/
+
 
     @Override
     public View onCreateView(LayoutInflater inflator, ViewGroup container, Bundle savedInstanceState){
         View view = inflator.inflate(R.layout.dialog_addtracker, container, false);
+
+        firstRun = getArguments().getBoolean("FirstRun");
 
 
         trackerIDEdit = view.findViewById(R.id.trackerIDEdit);
@@ -51,11 +64,13 @@ public class AddTrackerDialog extends DialogFragment {
                 String TrackerID = trackerIDEdit.getText().toString();
                 DatabaseHelper dbh = new DatabaseHelper(getContext());
 
+
                 // add new Tracker to the database and go to the trackerActivity
                 if (dbh.addNewTracker(new Tracker(TrackerID, "", "", "",300.0, "", 1))) {
                     Intent intent = new Intent(getActivity(), trackerActivity.class);
                     // add TrackerID to the intent send to the trackerActivity
                     intent.putExtra("TrackerID", TrackerID);
+                    intent.putExtra("FirstRun", firstRun);
                     startActivity(intent);
                     getDialog().dismiss();
                 } else {

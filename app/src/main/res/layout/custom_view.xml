@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/image"
+        android:layout_marginBottom="-178dp"
+        android:text="Swipe it to the right to edit, and to the left to delete"
+        android:textAlignment="center"
+        android:textSize="30sp" />
+
+
+    <ImageView
+        android:id="@+id/image"
+
+        android:layout_centerInParent="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Close"
+        android:textColor="@color/colorAccent"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+
+
+
+
+</RelativeLayout>

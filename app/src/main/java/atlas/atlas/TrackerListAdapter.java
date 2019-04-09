@@ -425,7 +425,7 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                         //imageview1.setImageBitmap(bitmap);
 
 
-                    } else if ((tracker.TrackerIconNum).equals("item0")) {
+                    } else /*if ((tracker.TrackerIconNum).equals("item0"))*/ {
 
 
                         //Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);

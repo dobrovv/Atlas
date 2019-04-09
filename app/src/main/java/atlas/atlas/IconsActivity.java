@@ -22,6 +22,11 @@ public class IconsActivity extends AppCompatActivity {
     private ImageButton boy5Button;
     //private ImageButton boy4Button;
     String TrackerID;
+    String imageViewIcon;
+    String trackerNameInTextV;
+    Double allowedDistanceInTextV;
+
+
     DatabaseHelper dbh;
 
    // DatabaseHelper dbh = new DatabaseHelper(this);
@@ -35,6 +40,14 @@ public class IconsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         TrackerID = intent.getStringExtra("TrackerID");
+        imageViewIcon = intent.getStringExtra("imageViewIcon");
+        trackerNameInTextV = intent.getStringExtra("trackerNameInTextV");
+        allowedDistanceInTextV = intent.getDoubleExtra("allowedDistanceInTextV", -1);
+
+
+
+
+
         dbh = new DatabaseHelper(this);
 
         Tracker tracker = dbh.getTrackerByID(TrackerID);
@@ -76,17 +89,19 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-        girl1Button.setOnLongClickListener(new View.OnLongClickListener()
+        girl1Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
 
+                imageViewIcon = "girl1";
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl1";
@@ -95,35 +110,35 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
 
 
             }
         });
 
 
-        boy1Button.setOnLongClickListener(new View.OnLongClickListener()
+        boy1Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "boy1";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy1";
@@ -132,35 +147,35 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
 
 
             }
         });
 
 
-        boy2Button.setOnLongClickListener(new View.OnLongClickListener()
+        boy2Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "boy2";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy2";
@@ -169,17 +184,17 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
 
 
 
@@ -188,17 +203,18 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-        boy3Button.setOnLongClickListener(new View.OnLongClickListener()
+        boy3Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "boy3";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy3";
@@ -207,17 +223,17 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
 
 
 
@@ -226,17 +242,18 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-        boy4Button.setOnLongClickListener(new View.OnLongClickListener()
+        boy4Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "boy4";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy4";
@@ -245,18 +262,17 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
 
 
             }
@@ -264,17 +280,18 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-        girl2Button.setOnLongClickListener(new View.OnLongClickListener()
+        girl2Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "girl2";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl2";
@@ -283,17 +300,17 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
 
 
 
@@ -301,17 +318,18 @@ public class IconsActivity extends AppCompatActivity {
         });
 
 
-        girl3Button.setOnLongClickListener(new View.OnLongClickListener()
+        girl3Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "girl3";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl3";
@@ -320,18 +338,17 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
 
 
             }
@@ -339,17 +356,18 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-        girl4Button.setOnLongClickListener(new View.OnLongClickListener()
+        girl4Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "girl4";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl4";
@@ -358,18 +376,17 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
 
 
             }
@@ -377,17 +394,18 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-        girl5Button.setOnLongClickListener(new View.OnLongClickListener()
+        girl5Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "girl5";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "girl5";
@@ -396,35 +414,34 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
-
 
             }
         });
 
 
-        boy5Button.setOnLongClickListener(new View.OnLongClickListener()
+        boy5Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
+                imageViewIcon = "boy0";
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "boy0";
@@ -433,16 +450,19 @@ public class IconsActivity extends AppCompatActivity {
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsActivity.this.startActivity(myIntent);
 
-                return true;
+
 
 
 

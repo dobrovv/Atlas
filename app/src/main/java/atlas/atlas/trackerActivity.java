@@ -1,20 +1,28 @@
 package atlas.atlas;
 //package test;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.os.Handler;
+import android.support.v4.app.ListFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
+import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -25,9 +33,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 
 import java.util.ArrayList;
+
+import me.toptas.fancyshowcase.FancyShowCaseView;
 
 public class trackerActivity extends AppCompatActivity {
     private static final String TAG = "Atlas"+trackerActivity.class.getSimpleName();
@@ -48,7 +59,14 @@ public class trackerActivity extends AppCompatActivity {
 
     String TrackerID;
 
+    String imageViewIcon;
+
+
     ArrayList<Tracker> TrackerList;
+
+
+    String trackerNameInTextV = null; //= String.valueOf(trackerNameEdit.getText());
+    Double allowedDistanceInTextV = null; //= Double.valueOf(allowedDistanceEdit.getText().toString());
 
 
 
@@ -57,6 +75,8 @@ public class trackerActivity extends AppCompatActivity {
 
 //import android.text.Spanned;
 // more imports
+
+
 
 
 
@@ -89,12 +109,67 @@ public class trackerActivity extends AppCompatActivity {
 
         toggleButton = findViewById(R.id.toggleButton);
 
+        Intent intent = getIntent();
+
+        boolean firstUse = intent.getBooleanExtra("FirstRun",false);
+
+        //boolean startInstruction = true;
+
+       // MainActivity activity = (MainActivity) MainActivity.this;
+       // String myDataFromActivity = activity.getMyData();
+        //Activity activity = MainActivity;
+
+
+
+
+
+
+        if(firstUse) {
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+
+
+                    new FancyShowCaseView.Builder(trackerActivity.this)
+                            .titleStyle(R.style.ShowCaseTitleStyle, Gravity.BOTTOM | Gravity.CENTER)
+                            .title("Press to chose the type of tracker, and long press to chose the icon ")
+                            .focusOn(findViewById(R.id.imageView2))
+                            //.backgroundColor(Color.parseColor("#333639"))
+                            .backgroundColor(Color.parseColor("#AAa55353"))
+                            .focusCircleRadiusFactor(2.0)
+
+                            .build()
+                            .show();
+
+
+                }
+            }, 2000);
+
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         //toggleclick(View );
 
 
-        Intent intent = getIntent();
+
         TrackerID = intent.getStringExtra("TrackerID");
+        imageViewIcon = intent.getStringExtra("imageViewIcon");
+         trackerNameInTextV = intent.getStringExtra("trackerNameInTextV");
+         allowedDistanceInTextV = intent.getDoubleExtra("allowedDistanceInTextV",-1);
+        //reloadContentForViews();
 
         DatabaseHelper dbh = new DatabaseHelper(this);
         Tracker tracker = dbh.getTrackerByID(TrackerID);
@@ -118,6 +193,48 @@ public class trackerActivity extends AppCompatActivity {
 // enable click images
         addListener();
 
+
+
+
+
+
+
+
+       // allowedDistanceEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+     /*   allowedDistanceEdit.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+               // Toast.makeText(trackerActivity.this, "Bellow, You can set the notifications ON/OFF when the tracker leaves the region", Toast.LENGTH_SHORT).show();
+
+
+
+            }
+
+
+
+        });*/
+
+
+
+        //final EditText edittext = (EditText) findViewById(R.id.edittext);
+        allowedDistanceEdit.setOnKeyListener(new View.OnKeyListener() {
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    if(isFirstRadius() )
+                    Toast.makeText(trackerActivity.this, "Bellow, You can set the notifications ON/OFF when the tracker leaves the region", Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                return false;
+            }
+        });
+
+
+
+
+
+
         saveButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -129,6 +246,9 @@ public class trackerActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                imageViewIcon = null;
+                allowedDistanceInTextV = null;
+                trackerNameInTextV = null;
                 reloadContentForViews();
             }
         });
@@ -137,6 +257,17 @@ public class trackerActivity extends AppCompatActivity {
         reloadContentForViews();
 
     }
+
+
+
+
+
+
+
+
+
+
+
     // load the trackers data from db and put it into activity's views
     public void reloadContentForViews() {
         try {
@@ -148,10 +279,19 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
+            String Icon = null;
+
+            if(imageViewIcon != null)
+                Icon =imageViewIcon;
+            else if(tracker.TrackerIconNum != null)
+                Icon = tracker.TrackerIconNum;
+
+
+
 
             imageview1  = (ImageButton) findViewById(R.id.imageView1);
-            if(tracker.TrackerIconNum != null)
-                if((tracker.TrackerIconNum).equals("girl1")) {
+            if(Icon != null)
+                if((Icon).equals("girl1")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl1);
@@ -162,7 +302,7 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("boy1")) {
+                else if((Icon).equals("boy1")) {
 
 
                 Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy1);
@@ -173,7 +313,7 @@ public class trackerActivity extends AppCompatActivity {
 
             }
 
-                else if((tracker.TrackerIconNum).equals("boy2")) {
+                else if((Icon).equals("boy2")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy2);
@@ -184,7 +324,7 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("boy3")) {
+                else if((Icon).equals("boy3")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy3);
@@ -195,7 +335,7 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("boy4")) {
+                else if((Icon).equals("boy4")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.boy4);
@@ -209,7 +349,7 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
-                else if((tracker.TrackerIconNum).equals("girl2")) {
+                else if((Icon).equals("girl2")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl2);
@@ -222,7 +362,7 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
-                else if((tracker.TrackerIconNum).equals("girl3")) {
+                else if((Icon).equals("girl3")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl3);
@@ -235,7 +375,7 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
-                else if((tracker.TrackerIconNum).equals("girl4")) {
+                else if((Icon).equals("girl4")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl4);
@@ -248,7 +388,7 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
-                else if((tracker.TrackerIconNum).equals("girl5")) {
+                else if((Icon).equals("girl5")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.girl5);
@@ -273,8 +413,8 @@ public class trackerActivity extends AppCompatActivity {
 
 
             imageview2  = (ImageButton) findViewById(R.id.imageView2);
-            if(tracker.TrackerIconNum != null)
-                if((tracker.TrackerIconNum).equals("pet1")) {
+            if(Icon != null)
+                if((Icon).equals("pet1")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet1);
@@ -285,7 +425,7 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("pet2")) {
+                else if((Icon).equals("pet2")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet2);
@@ -296,7 +436,7 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("pet3")) {
+                else if((Icon).equals("pet3")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet3);
@@ -307,7 +447,7 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("pet4")) {
+                else if((Icon).equals("pet4")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet4);
@@ -318,7 +458,7 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("pet5")) {
+                else if((Icon).equals("pet5")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet5);
@@ -332,7 +472,7 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
-                else if((tracker.TrackerIconNum).equals("pet0")) {
+                else /*if((tracker.TrackerIconNum).equals("pet0"))*/ {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.pet0);
@@ -346,9 +486,11 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
+
+
             imageview3  = (ImageButton) findViewById(R.id.imageView3);
-            if(tracker.TrackerIconNum != null)
-                if((tracker.TrackerIconNum).equals("item1")) {
+            if(Icon != null)
+                if((Icon).equals("item1")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.item1);
@@ -359,7 +501,7 @@ public class trackerActivity extends AppCompatActivity {
 
                 }
 
-                else if((tracker.TrackerIconNum).equals("item2")) {
+                else if((Icon).equals("item2")) {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.item2);
@@ -375,7 +517,7 @@ public class trackerActivity extends AppCompatActivity {
 
 
 
-                else if((tracker.TrackerIconNum).equals("item0")) {
+                else /*if((tracker.TrackerIconNum).equals("item0"))*/ {
 
 
                     Bitmap bitmap = BitmapFactory.decodeResource(this.getResources(), R.drawable.item0);
@@ -395,8 +537,20 @@ public class trackerActivity extends AppCompatActivity {
 
 
             // fill in the views
-            trackerNameEdit.setText(String.valueOf(tracker.TrackerName));
-            allowedDistanceEdit.setText(String.valueOf(AllowedDistance));
+
+
+            if(trackerNameInTextV == null)
+                trackerNameEdit.setText(String.valueOf(tracker.TrackerName));
+            else
+                trackerNameEdit.setText(trackerNameInTextV);
+
+            if(allowedDistanceInTextV == null|| allowedDistanceInTextV == -1)
+                allowedDistanceEdit.setText(String.valueOf(tracker.AllowedDistance));
+            else
+                allowedDistanceEdit.setText(String.valueOf(allowedDistanceInTextV));
+
+
+
 
 
 
@@ -431,6 +585,11 @@ public class trackerActivity extends AppCompatActivity {
             tracker.TrackerName = TrackerName;
             tracker.AllowedDistance = AllowedDistance;
             tracker.TrackerIcon = getResources().getResourceEntryName(selectedImageID);
+
+
+            if(imageViewIcon != null)
+            tracker.TrackerIconNum = imageViewIcon;
+
             dbh.updateTracker(tracker);
             Toast.makeText(this, "Changes saved!", Toast.LENGTH_SHORT).show();
         } catch (Exception ex) {
@@ -482,6 +641,9 @@ public class trackerActivity extends AppCompatActivity {
             public boolean onLongClick(View v)
             {
 
+                 trackerNameInTextV = String.valueOf(trackerNameEdit.getText());
+                 allowedDistanceInTextV = Double.valueOf(allowedDistanceEdit.getText().toString());
+
                 setSelectedImage(R.mipmap.ic_tracker_1);
 
                 DatabaseHelper dbh = new DatabaseHelper(trackerActivity.this);
@@ -494,6 +656,9 @@ public class trackerActivity extends AppCompatActivity {
                 Intent myIntent = new Intent(trackerActivity.this, IconsActivity.class);
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 trackerActivity.this.startActivity(myIntent);
 
@@ -527,6 +692,9 @@ public class trackerActivity extends AppCompatActivity {
             public boolean onLongClick(View v)
             {
 
+                trackerNameInTextV = String.valueOf(trackerNameEdit.getText());
+                allowedDistanceInTextV = Double.valueOf(allowedDistanceEdit.getText().toString());
+
                 setSelectedImage(R.mipmap.ic_tracker_2);
 
                 DatabaseHelper dbh = new DatabaseHelper(trackerActivity.this);
@@ -539,6 +707,9 @@ public class trackerActivity extends AppCompatActivity {
                 Intent myIntent = new Intent(trackerActivity.this, IconsPetsActivity.class);
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 trackerActivity.this.startActivity(myIntent);
 
@@ -575,6 +746,9 @@ public class trackerActivity extends AppCompatActivity {
             public boolean onLongClick(View v)
             {
 
+                trackerNameInTextV = String.valueOf(trackerNameEdit.getText());
+                allowedDistanceInTextV = Double.valueOf(allowedDistanceEdit.getText().toString());
+
                 setSelectedImage(R.mipmap.ic_tracker_3);
 
                 DatabaseHelper dbh = new DatabaseHelper(trackerActivity.this);
@@ -588,6 +762,9 @@ public class trackerActivity extends AppCompatActivity {
                 Intent myIntent = new Intent(trackerActivity.this, IconsItemsActivity.class);
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 trackerActivity.this.startActivity(myIntent);
 
@@ -627,12 +804,31 @@ public class trackerActivity extends AppCompatActivity {
     }
 
 
-  /*  public void toggleclick(View v){
-        if(toggleButton.isChecked())
-            Toast.makeText(trackerActivity.this, "ON", Toast.LENGTH_SHORT).show();
+    private boolean isFirstRadius() {
+
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_FirstEver_Radius_KEY = "FirstEverRadius";
+        final int DOESNT_EXIST = 0;
+
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int savedFirstEverTracker = prefs.getInt(PREF_FirstEver_Radius_KEY, DOESNT_EXIST);
+
+        prefs.edit().putInt(PREF_FirstEver_Radius_KEY, 1).apply();
+
+
+        if(savedFirstEverTracker == 0){
+            return true;
+        }
         else
-            Toast.makeText(trackerActivity.this, "OFF", Toast.LENGTH_SHORT).show();
-    }*/
+            return false;
+
+
+    }
+
+
 
 
 
@@ -644,6 +840,14 @@ public class trackerActivity extends AppCompatActivity {
         // update the tracker list if the Activity gained focus back without calling the onCreate()
 
     }
+
+
+
+
+
+
+
+
 
 
 }
