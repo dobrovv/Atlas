@@ -45,17 +45,17 @@
 
     <TextView
         android:id="@+id/trackerNameTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="13dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="135dp"
+        android:layout_marginEnd="109dp"
         android:layout_toEndOf="@+id/linearlayout"
         android:text="Name here"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="18sp" />
+        android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/trackerStatus"
@@ -74,41 +74,41 @@
 
     <TextView
         android:id="@+id/timestampTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="22dp"
+        android:layout_width="130dp"
+        android:layout_height="30dp"
         android:layout_below="@+id/trackerDistanceTextView"
         android:layout_alignBottom="@+id/trackerStatus"
-        android:layout_marginStart="14dp"
+        android:layout_marginStart="13dp"
         android:layout_marginLeft="79dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="-25dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="-19dp"
         android:layout_toEndOf="@+id/linearlayout"
         android:text="Timestamp here"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="12sp" />
 
     <TextView
         android:id="@+id/trackerDistanceTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="132dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/trackerNameTextView"
         android:layout_marginStart="14dp"
         android:layout_marginLeft="89dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/linearlayout"
         android:text="Distance here"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textSize="12sp" />
 
     <ImageView
         android:id="@+id/battery"
-        android:layout_width="wrap_content"
-        android:layout_height="63dp"
+        android:layout_width="54dp"
+        android:layout_height="57dp"
         android:layout_alignBottom="@+id/timestampTextView"
-        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="310dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginEnd="25dp"
+        android:layout_marginTop="19dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginBottom="13dp"
         app:srcCompat="@drawable/levelofb" />
 
