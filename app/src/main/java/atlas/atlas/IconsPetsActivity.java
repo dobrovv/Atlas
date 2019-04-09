@@ -18,6 +18,9 @@ public class IconsPetsActivity extends AppCompatActivity {
     private ImageButton pet6Button;
     //private ImageButton boy4Button;
     String TrackerID;
+    String imageViewIcon;
+    String trackerNameInTextV;
+    Double allowedDistanceInTextV;
     DatabaseHelper dbh;
 
     // DatabaseHelper dbh = new DatabaseHelper(this);
@@ -31,6 +34,12 @@ public class IconsPetsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         TrackerID = intent.getStringExtra("TrackerID");
+        imageViewIcon = intent.getStringExtra("imageViewIcon");
+        trackerNameInTextV = intent.getStringExtra("trackerNameInTextV");
+        allowedDistanceInTextV = intent.getDoubleExtra("allowedDistanceInTextV", -1);
+
+
+
         dbh = new DatabaseHelper(this);
 
         Tracker tracker = dbh.getTrackerByID(TrackerID);
@@ -68,36 +77,47 @@ public class IconsPetsActivity extends AppCompatActivity {
 
 
 
-        pet1Button.setOnLongClickListener(new View.OnLongClickListener()
+
+
+
+
+
+
+
+
+
+        pet1Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
 
+                imageViewIcon = "pet1";
 
 
+/*
 
                 Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet1";
 
-               // Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsPetsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsPetsActivity.this.startActivity(myIntent);
-
-                return true;
-
 
 
 
@@ -105,36 +125,38 @@ public class IconsPetsActivity extends AppCompatActivity {
         });
 
 
-        pet2Button.setOnLongClickListener(new View.OnLongClickListener()
+        pet2Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
 
+                imageViewIcon = "pet2";
 
 
+/*
 
                 Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet2";
 
-              //  Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
                 dbh.updateTracker(tracker);
-
+*/
                 Intent myIntent = new Intent(IconsPetsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsPetsActivity.this.startActivity(myIntent);
-
-                return true;
-
 
 
 
@@ -143,37 +165,41 @@ public class IconsPetsActivity extends AppCompatActivity {
 
 
 
-        pet3Button.setOnLongClickListener(new View.OnLongClickListener()
+        pet3Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
 
+                imageViewIcon = "pet3";
 
 
+/*
 
                 Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet3";
 
-             //   Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+                //   Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
+
+
+
 
                 Intent myIntent = new Intent(IconsPetsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsPetsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
 
 
             }
@@ -182,37 +208,38 @@ public class IconsPetsActivity extends AppCompatActivity {
 
 
 
-        pet4Button.setOnLongClickListener(new View.OnLongClickListener()
+        pet4Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
 
+                imageViewIcon = "pet4";
 
 
 
+/*
                 Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet4";
 
-               // Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsPetsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsPetsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
 
 
             }
@@ -221,36 +248,38 @@ public class IconsPetsActivity extends AppCompatActivity {
 
 
 
-        pet5Button.setOnLongClickListener(new View.OnLongClickListener()
+        pet5Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
 
+                imageViewIcon = "pet5";
 
 
 
+/*
                 Tracker tracker = dbh.getTrackerByID(TrackerID);
 
                 //WHy this doens't not change???
                 tracker.TrackerIconNum = "pet5";
 
-            //    Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsPetsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsPetsActivity.this.startActivity(myIntent);
-
-                return true;
-
 
 
 
@@ -260,41 +289,57 @@ public class IconsPetsActivity extends AppCompatActivity {
 
 
 
-        pet6Button.setOnLongClickListener(new View.OnLongClickListener()
+        pet6Button.setOnClickListener(new View.OnClickListener()
         {
 
             @Override
-            public boolean onLongClick(View v)
+            public void onClick(View v)
             {
 
 
 
 
-                Tracker tracker = dbh.getTrackerByID(TrackerID);
+/*                Tracker tracker = dbh.getTrackerByID(TrackerID);
 
-                //WHy this doens't not change???
+
                 tracker.TrackerIconNum = "pet0";
 
-            //    Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(IconsPetsActivity.this, tracker.TrackerIconNum+TrackerID, Toast.LENGTH_SHORT).show();
 
 
 
-                dbh.updateTracker(tracker);
+                dbh.updateTracker(tracker);*/
 
                 Intent myIntent = new Intent(IconsPetsActivity.this, trackerActivity.class);
 
 
                 myIntent.putExtra("TrackerID", TrackerID);
+                myIntent.putExtra("imageViewIcon", imageViewIcon);
+                myIntent.putExtra("trackerNameInTextV", trackerNameInTextV);
+                myIntent.putExtra("allowedDistanceInTextV", allowedDistanceInTextV);
 
                 IconsPetsActivity.this.startActivity(myIntent);
-
-                return true;
-
-
 
 
             }
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

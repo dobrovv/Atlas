@@ -2,6 +2,7 @@ package atlas.atlas;
 
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -453,6 +454,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mSensorManager.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_GAME);
 
 
+        if(isFirstMap()){
+
+            Toast.makeText(MapActivity.this, "You might need to do an eight motion with your phone to recalibrate the compass", Toast.LENGTH_LONG).show();
+
+
+        }
+
+
 
 
     }
@@ -479,6 +488,17 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         LatLng androidLoc = new LatLng(AndroidLatitude, AndroidLongitude);
         LatLng trackerLoc = new LatLng(Latitude, Longitude);
         androidMarker = mMap.addMarker(new MarkerOptions().position(androidLoc).flat(true).title("Your Location"));
+
+
+        Bitmap  androidBitmapIcon;
+
+        androidBitmapIcon = BitmapFactory.decodeResource(this.getResources(), R.drawable.usermarker);
+
+        androidBitmapIcon = Bitmap.createScaledBitmap(androidBitmapIcon, 125, 125, false);
+
+        androidMarker.setIcon(BitmapDescriptorFactory.fromBitmap(androidBitmapIcon));
+
+
 
         trackerMarker = mMap.addMarker(new MarkerOptions().position(trackerLoc).title(tracker.TrackerName));
 
@@ -1042,6 +1062,32 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 }
             }
         }.start();
+    }
+
+
+
+    private boolean isFirstMap() {
+
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_MAP_OPENED = "FirstEverMap";
+        final int DOESNT_EXIST = 0;
+
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int savedFirstMap = prefs.getInt(PREF_MAP_OPENED, DOESNT_EXIST);
+
+        prefs.edit().putInt(PREF_MAP_OPENED, 1).apply();
+
+
+        if(savedFirstMap == 0){
+            return true;
+        }
+        else
+            return false;
+
+
     }
 
 

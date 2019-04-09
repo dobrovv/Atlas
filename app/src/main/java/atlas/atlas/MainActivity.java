@@ -5,10 +5,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Handler;
@@ -22,13 +24,18 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.OnShowcaseEventListener;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -43,6 +50,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import me.toptas.fancyshowcase.FancyShowCaseView;
+import me.toptas.fancyshowcase.OnViewInflateListener;
+
+
+//import me.toptas.ShowCaseView.ShowCaseView;
+
+
 
 //comment 12
 
@@ -51,6 +65,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
   //  private static int SPLASH_TIME_OUT = 5;
 
     private static final String TAG = "Atlas"+MainActivity.class.getSimpleName();
+
+    //This is only used to display instructions for the app's first use
+    FancyShowCaseView mFancyShowCaseView;
+
+    ShowcaseView.Builder showCaseView;
 
 
     // android location permissions
@@ -89,6 +108,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     Location androidLatestLocation; // stores the latest known androids location (may be null)
 
+    boolean FirstRun = false;
+
+    final int SHOWCASEVIEWID_1D = 34;
+
     /**
      *  Broadcast Receiver for the GPSReading updates that are sent from ReceiverServiceMockup
      *  the NEW_GPSREADING broadcasts contain GPSReadingID, TrackerID, Latitude and Longitude of the tracker
@@ -118,6 +141,75 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 // update the tracker list
                 trackerListAdapter.updateTracker(TrackerID);
+
+
+
+
+
+
+
+
+                if(isFirstTracker()) {
+
+
+                    //trackerListAdapter.getItemCount();
+
+
+
+                   // mFancyShowCaseView
+
+
+
+
+
+
+
+                            new FancyShowCaseView.Builder(MainActivity.this)
+                                    .title("Swipe right to edit, and left to  delete a tracker")
+                                    .focusOn(findViewById(R.id.trackerListMain))
+                                    .customView(R.layout.custom_view, new OnViewInflateListener() {
+
+
+                                        @Override
+                                        public void onViewInflated(View view) {
+
+                                            //ImageView imageView;
+
+                                            //imageView=view.findViewById(R.id.image);
+
+                                            //imageview.setpo
+                                        }
+                                    })
+                                //    .customView(R.id.custom_view)
+                                   // .focusRectAtPosition(260, 85,  480, 80)
+                                   // .focusCircleRadiusFactor()
+                                   // .se
+                                    //.backgroundColor(Color.parseColor("#77b0bf1a"))
+                                    .build()
+                                    .show();
+
+
+
+
+
+
+
+
+
+
+                }
+
+
+
+
+
+
+
+
+
+
+
+
 
                 // update minimap
                 updateTrackerMiniMapMarker(TrackerID, new LatLng(gpsReading.Latitude, gpsReading.Longitude));
@@ -176,7 +268,115 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
        // layout.setBackgroundColor(android.R.color.white);
         //startServiceButton = findViewById(R.id.startServiceButton);
         //stopServiceButton = findViewById(R.id.stopServiceButton);
-Context context;
+
+
+
+
+
+        if(checkFirstRun()) {
+
+            FirstRun = true;
+
+            final Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    new FancyShowCaseView.Builder(MainActivity.this)
+                       //     .withMaterialShowCase(
+
+                 /*   showCaseView = new ShowcaseView.Builder(MainActivity.this)
+                            .withMaterialShowcase()
+                            .setTarget(new ViewTarget(findViewById(R.id.addTracker)))
+                            .setContentTitle("We are here")
+                            .setContentText("Press here to add a tracker")
+                            .setStyle(R.style.ShowCaseViewStyle)
+                            .singleShot(SHOWCASEVIEWID_1D)
+                            .setShowcaseEventListener(new OnShowcaseEventListener() {
+                                @Override
+                                public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+                                }
+
+                                @Override
+                                public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                                }
+
+                                @Override
+                                public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                                }
+
+                                @Override
+                                public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
+
+                                }
+                            });
+
+                            showCaseView.build();*/
+                    //showShowCaseView();
+
+
+
+
+
+
+
+
+
+
+
+                            .title("Press here to add a  tracker")
+                            .focusOn(findViewById(R.id.addTracker))
+                            //.backgroundColor(Color.parseColor("#77b0bf1a"))
+                            .build()
+                            .show();
+
+                }
+            }, 2000);
+
+        }
+        else
+            FirstRun = false;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Context context;
         // add minimap layout
         mapTextView = findViewById(R.id.mapTextView);
         miniMapView = findViewById(R.id.miniMapView);
@@ -247,6 +447,8 @@ Context context;
         },SPLASH_TIME_OUT);*/
 
     }
+
+
     private void setupRecyclerView(){
         RecyclerView recyclerView = (RecyclerView)findViewById(R.id.trackerListMain);
 
@@ -320,7 +522,15 @@ Context context;
         // in case we added more to toolbar
         if(id==R.id.addTracker){
             //startActivity(new Intent(this, trackerActivity.class));
+
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("FirstRun",FirstRun);
+
             AddTrackerDialog dialog = new AddTrackerDialog();
+            dialog.setArguments(bundle);
+
+
+
             dialog.show(getSupportFragmentManager(), "Add new Tracker");
 
         } else if(id==R.id.startServicesAction) {
@@ -895,6 +1105,177 @@ Context context;
             Log.e(TAG, "trySetMarkerIcon() can't set icon to tracker's marker Exception: " + ex.getMessage());
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+    private boolean checkFirstRun() {
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_VERSION_CODE_KEY = "version_code";
+        final int DOESNT_EXIST = -1;
+        boolean firstRun;
+
+        // Get current version code
+        int currentVersionCode = BuildConfig.VERSION_CODE;
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
+
+        // Check for first run or upgrade
+        if (currentVersionCode == savedVersionCode) {
+
+            // This is just a normal run
+            firstRun = false;
+
+        } else if (savedVersionCode == DOESNT_EXIST) {
+
+            // TODO This is a new install (or the user cleared the shared preferences)
+            firstRun = true;
+
+        } else if (currentVersionCode > savedVersionCode) {
+
+            // TODO This is an upgrade
+            firstRun = false;
+        }
+        else
+            firstRun = false;
+
+        // Update the shared preferences with the current version code
+        prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).apply();
+        return firstRun;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private boolean isFirstTracker() {
+
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_FirstEver_Tracker_KEY = "FirstEverTracker";
+        final int DOESNT_EXIST = 0;
+
+
+        // Get saved version code
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        int savedFirstEverTracker = prefs.getInt(PREF_FirstEver_Tracker_KEY, DOESNT_EXIST);
+
+        prefs.edit().putInt(PREF_FirstEver_Tracker_KEY, 1).apply();
+
+
+        if(savedFirstEverTracker == 0){
+            return true;
+        }
+        else
+            return false;
+
+
+    }
+
+
+
+
+
+
+
+    public void showShowCaseView(){
+
+
+        showCaseView = new ShowcaseView.Builder(this)
+                .withMaterialShowcase()
+                .setTarget(new ViewTarget(R.id.addTracker,this))
+                .setContentTitle("We are here")
+                .setContentText("Press here to add a tracker")
+                .setStyle(R.style.ShowCaseViewStyle)
+                //.singleShot(SHOWCASEVIEWID_1D)
+                .setShowcaseEventListener(new OnShowcaseEventListener() {
+                    @Override
+                    public void onShowcaseViewHide(ShowcaseView showcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewShow(ShowcaseView showcaseView) {
+
+                    }
+
+                    @Override
+                    public void onShowcaseViewTouchBlocked(MotionEvent motionEvent) {
+
+                    }
+                });
+
+        showCaseView.build().show();
+
+
+
+
+
+    }
+
+
+ /*   private void showWithCustoView(View v){
+        mFancyShowCaseView = new FancyShowCaseView.Builder(this)
+                .focusOn(v)
+                .customView(R.layout.custom_view), new OnViewInflateListener() {
+            @
+
+
+
+
+
+        }
+
+
+
+
+
+
+
+    }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
 
