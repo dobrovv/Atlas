@@ -197,8 +197,22 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
             }
 
             //set tracker on/off  status image
-            boolean offline = true;
-            if(offline){ itemViewHolder.trackerStatusImage.setImageResource(R.drawable.userstateon);}
+            if (gpsReading == null || gpsReading.GPSSignal <= 0)
+                itemViewHolder.trackerStatusImage.setImageResource(R.drawable.userstateoff);
+            else
+                itemViewHolder.trackerStatusImage.setImageResource(R.drawable.userstateon);
+
+            //set tracker battery status
+            int batteryLevel = gpsReading==null ? 0 : gpsReading.BatteryLevel;
+
+            if (batteryLevel <= 5)
+                itemViewHolder.battery.setImageResource(R.drawable.batteryempty);
+            else if (batteryLevel <= 33)
+                itemViewHolder.battery.setImageResource(R.drawable.batteryone);
+            else if (batteryLevel <= 66)
+                itemViewHolder.battery.setImageResource(R.drawable.batterytow);
+            else
+                itemViewHolder.battery.setImageResource(R.drawable.levelofb);
 
             // set tracker icon
             if(tracker.TrackerIcon == null || tracker.TrackerIcon.isEmpty()) {
@@ -475,8 +489,11 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                 long lastSeenMs = (currentTimeMillis() - gpsReading.androidTimestamp);
                 if (lastSeenMs < 3000) {
                     itemViewHolder.timestampTextView.setText("Last seen: Just now");
-                } else {
+                } else if (lastSeenMs < 60000) {
                     itemViewHolder.timestampTextView.setText("Last seen: " + lastSeenMs/1000 + " seconds ago");
+                } else {
+                    String mins = lastSeenMs < 120000 ? "min" : "mins";
+                    itemViewHolder.timestampTextView.setText("Last seen: " + lastSeenMs/60000 +" "+ mins+ " ago");
                 }
             } else {
                 itemViewHolder.timestampTextView.setText("Not seen yet");
@@ -549,6 +566,5 @@ public class TrackerListAdapter extends RecyclerView.Adapter<TrackerListAdapter.
                 }
             }
         });
-
     }
 }

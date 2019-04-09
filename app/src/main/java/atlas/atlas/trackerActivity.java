@@ -537,8 +537,6 @@ public class trackerActivity extends AppCompatActivity {
 
 
             // fill in the views
-
-
             if(trackerNameInTextV == null)
                 trackerNameEdit.setText(String.valueOf(tracker.TrackerName));
             else
@@ -548,15 +546,6 @@ public class trackerActivity extends AppCompatActivity {
                 allowedDistanceEdit.setText(String.valueOf(tracker.AllowedDistance));
             else
                 allowedDistanceEdit.setText(String.valueOf(allowedDistanceInTextV));
-
-
-
-
-
-
-
-
-
 
 
 

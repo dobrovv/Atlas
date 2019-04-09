@@ -1,7 +1,9 @@
 package atlas.atlas;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.WindowManager;
@@ -19,17 +21,16 @@ public class WelcomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         progressBar = findViewById(R.id.progress_bar);
-       // textView_welcome = findViewById(R.id.textView_welcome);
+        // textView_welcome = findViewById(R.id.textView_welcome);
         textView_progress = findViewById(R.id.text_view);
 
         progressBar.setMax(100);
         progressBar.setScaleY(3f);
 
         progressAnim();
-
 
     }
 
