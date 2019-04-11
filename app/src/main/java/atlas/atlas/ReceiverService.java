@@ -60,7 +60,7 @@ public class ReceiverService extends Service {
     public static final String BROADCAST_ACTION_NEW_GPSREADING = "BROADCAST_ACTION_NEW_GPSREADING";
     public static final String BROADCAST_ACTION_CONNECTION_STATE_CHANGE = "BROADCAST_ACTION_CONNECTION_STATE_CHANGE";
 
-    private static final int GPSREADINGS_REQUEST_INTERVAL = 15000; // interval between requests to the server for updates in ms
+    private static final int GPSREADINGS_REQUEST_INTERVAL = 5000; // interval between requests to the server for updates in ms
 
     // Connection state of the receiver service
     public static final int CONNECTION_STATE_DISCONNECTED = 0; // If the communication with the web server failed in some way
