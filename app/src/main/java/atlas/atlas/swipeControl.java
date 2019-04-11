@@ -10,7 +10,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import static android.support.v7.widget.helper.ItemTouchHelper.*;
-
+// see how to implement it on RecyclerView https://codeburst.io/android-swipe-menu-with-recyclerview-8f28a235ff28
 enum ButtonsState {
     GONE,
     LEFT_VISIBLE,
