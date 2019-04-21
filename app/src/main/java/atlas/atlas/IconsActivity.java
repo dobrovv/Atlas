@@ -3,7 +3,9 @@ package atlas.atlas;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -36,6 +38,89 @@ public class IconsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.child_icons);
+
+
+
+
+
+
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+
+        float density  = getResources().getDisplayMetrics().density;
+
+
+
+
+
+
+
+
+
+
+        FrameLayout mFrame=(FrameLayout) findViewById(R.id.frameLayout1);
+        mFrame.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+        FrameLayout mFrame2=(FrameLayout) findViewById(R.id.frameLayout2);
+        mFrame2.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+        FrameLayout mFrame3=(FrameLayout) findViewById(R.id.frameLayout3);
+        mFrame3.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+
+        FrameLayout mFrame4=(FrameLayout) findViewById(R.id.frameLayout4);
+        mFrame4.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+
+        FrameLayout mFrame5=(FrameLayout) findViewById(R.id.frameLayout5);
+        mFrame5.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+
+        FrameLayout mFrame6=(FrameLayout) findViewById(R.id.frameLayout6);
+        mFrame6.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+        FrameLayout mFrame7=(FrameLayout) findViewById(R.id.frameLayout7);
+        mFrame7.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+        FrameLayout mFrame8=(FrameLayout) findViewById(R.id.frameLayout8);
+        mFrame8.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+        FrameLayout mFrame9=(FrameLayout) findViewById(R.id.frameLayout9);
+        mFrame9.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+        FrameLayout mFrame10=(FrameLayout) findViewById(R.id.frameLayout10);
+        mFrame10.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+
+
+
+
+
+
+
+
 
 
         Intent intent = getIntent();
