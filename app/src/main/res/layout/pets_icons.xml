@@ -22,133 +22,115 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton1A"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
+                    <FrameLayout
+                        android:id="@+id/frameLayout1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton1"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/pet1" />
+                        <ImageButton
+                            android:id="@+id/imageButton1"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/pet1" />
+                    </FrameLayout>
 
 
-                    <ImageButton
-                        android:id="@+id/imageButton18B"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton2A"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
+                    <FrameLayout
+                        android:id="@+id/frameLayout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton2"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/pet2" />
+                        <ImageButton
+                            android:id="@+id/imageButton2"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/pet2" />
+                    </FrameLayout>
 
-                    <ImageButton
-                        android:id="@+id/imageButton2B"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton3A"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"/>
+                    <FrameLayout
+                        android:id="@+id/frameLayout3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton3"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/pet3" />
+                        <ImageButton
+                            android:id="@+id/imageButton3"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/pet3" />
+                    </FrameLayout>
 
-                    <ImageButton
-                        android:id="@+id/imageButton3B"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton4A"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
+                    <FrameLayout
+                        android:id="@+id/frameLayout4"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton4"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/pet4" />
+                        <ImageButton
+                            android:id="@+id/imageButton4"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/pet4" />
+                    </FrameLayout>
 
-                    <ImageButton
-                        android:id="@+id/imageButton4B"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton5A"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
+                    <FrameLayout
+                        android:id="@+id/frameLayout5"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton5"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/pet5" />
+                        <ImageButton
+                            android:id="@+id/imageButton5"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/pet5" />
+                    </FrameLayout>
 
-                    <ImageButton
-                        android:id="@+id/imageButton5B"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton6A"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
+                    <FrameLayout
+                        android:id="@+id/frameLayout6"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
-                    <ImageButton
-                        android:id="@+id/imageButton6"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/pet0" />
+                        <ImageButton
+                            android:id="@+id/imageButton6"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
+                            android:scaleType="fitXY"
+                            app:srcCompat="@drawable/pet0" />
+                    </FrameLayout>
 
-                    <ImageButton
-                        android:id="@+id/imageButton6B"
-                        android:layout_width="150dp"
-                        android:layout_height="150dp" />
                 </TableRow>
 
             </TableLayout>

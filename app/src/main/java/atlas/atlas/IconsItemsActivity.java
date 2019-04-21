@@ -3,7 +3,9 @@ package atlas.atlas;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -30,6 +32,44 @@ public class IconsItemsActivity extends AppCompatActivity {
         setContentView(R.layout.item_icons);
 
 
+
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+
+        float density  = getResources().getDisplayMetrics().density;
+
+
+
+
+
+
+
+
+
+
+        FrameLayout mFrame=(FrameLayout) findViewById(R.id.frameLayout1);
+        mFrame.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+
+        FrameLayout mFrame2=(FrameLayout) findViewById(R.id.frameLayout2);
+        mFrame2.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+
+        FrameLayout mFrame3=(FrameLayout) findViewById(R.id.frameLayout3);
+        mFrame3.setPadding(width/2-(int)(150*density/2), 0, 0, 0);
+
+
+
+
+
+
         Intent intent = getIntent();
         TrackerID = intent.getStringExtra("TrackerID");
         imageViewIcon = intent.getStringExtra("imageViewIcon");
@@ -42,6 +82,13 @@ public class IconsItemsActivity extends AppCompatActivity {
 
         //WHy this doens't not change???
         // tracker.TrackerIconNum = "girl1";
+
+
+
+
+
+
+
 
 
         addListener();

@@ -239,7 +239,6 @@ public class trackerActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 saveContentOfViews();
-                reloadContentForViews();
             }
         });
 
@@ -570,6 +569,11 @@ public class trackerActivity extends AppCompatActivity {
             String TrackerName = String.valueOf(trackerNameEdit.getText());
             Double AllowedDistance = Double.valueOf(allowedDistanceEdit.getText().toString());
             // save data to db
+
+
+
+
+
 
             tracker.TrackerName = TrackerName;
             tracker.AllowedDistance = AllowedDistance;
